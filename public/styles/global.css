@@ -2,5 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+body {
+  @apply dark:bg-gray-900;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold my-4 dark:text-white;
+}
+
+span, p, a, button { @apply text-base dark:text-white; }
+
+h1 { @apply text-4xl }
+h2 { @apply text-2xl }
+h3 { @apply text-xl }
+h4, h5, h6 { @apply text-lg }
+
+footer p {
+  @apply dark:text-white;
+}
+footer ul li a {
+  @apply dark:text-white;
 }
