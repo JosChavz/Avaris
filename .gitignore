@@ -1,0 +1,5 @@
+.htaccess
+.htpasswd
+node_modules/
+
+/vendor/
