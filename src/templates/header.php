@@ -48,7 +48,7 @@
 
           <a href="/auth/login.php">
             <button
-              class='px-4 py-2 text-sm rounded-full font-bold text-gray-500 border-2 bg-transparent hover:bg-gray-50 transition-all ease-in-out duration-300'>Login</button>
+              class='px-4 py-2 text-sm rounded-full font-bold text-gray-500 dark:text-white border-2 bg-transparent hover:bg-gray-50 dark:hover:text-gray-700 transition-all ease-in-out duration-300'>Login</button>
           </a>
           <a href="/auth/register.php">
             <button

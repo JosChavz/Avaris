@@ -34,7 +34,7 @@ use classes\Session;
 
 require_once("classes/Database.php");
 
-// require_once 'functions.php
+require_once 'functions.php';
 
 // -> All classes in directory
 foreach(glob(ROOT . 'src/classes/*.php') as $file) {

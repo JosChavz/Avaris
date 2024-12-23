@@ -3,7 +3,7 @@
 require_once("../../src/initialize.php");
 
 $title = "Login";
-$bg_color = "bg-gray-50";
+$bg_color = "bg-gray-50 dark:bg-gray-700";
 
 ob_start();
 
