@@ -9,9 +9,10 @@ use mysqli_sql_exception;
 #[AllowDynamicProperties] class Database 
 {
     static protected mysqli $database;
-    protected string $table_name;
-    protected array $columns = array('id', 'created_at', 'updated_at');
-    public array $errors = array();
+    protected static string $table_name;
+    protected array $columns = array();
+    const DEFAULT_COLUMNS = array('id', 'created_at', 'updated_at');
+    public array $errors;
 
     // Columns
     public $id;
@@ -19,12 +20,13 @@ use mysqli_sql_exception;
     public $updated_at;
 
     function __construct(array $args=[]) {
-      global $env;
-      $database = new mysqli($env[DB_HOST], $env['DB_USER'], $db['DB_PASS'], $env['DB_TABLE']);
+      $id = $args['id'] ?? '';
+      $created_at = $args['created_at'] ?? date('Y-m-d H:i:s');
+      $updated_at = $args['updated_at'] ?? date('Y-m-d H:i:s');
+    }
 
-      $id = $args['id'] || '';
-      $created_at = $args['created_at'] || date();
-      $updated_at = $args['updated_at'] || date();
+    public static function set_database($database) : void {
+      self::$database = $database; 
     }
 
     /**
@@ -160,7 +162,6 @@ use mysqli_sql_exception;
             self::$database->query($sql);
         } catch (mysqli_sql_exception $e) {
             $this->errors = "Unable to add transaction";
-            // echo $e;
         }
 
         return (self::$database->affected_rows) >= 0;
@@ -180,11 +181,11 @@ use mysqli_sql_exception;
      * @return bool
      */
     public function save(array $requires=[]) : bool {
-        if (isset($this->id)) {
-            return $this->update($requires);
-        } else {
-            return $this->create($requires);
-        }
+      if (isset($this->id)) {
+          return $this->update($requires);
+      } else {
+          return $this->create($requires);
+      }
     }
 
     public function remove() : bool {
@@ -213,8 +214,8 @@ use mysqli_sql_exception;
 
         foreach ($requirements as $requirement) {
             if (!in_array($requirement, $attr_keys)) {
-                $this->errors[] = "Field $requirement is missing!";
-                return false;
+              $this->errors[] = "Field $requirement is missing!";
+              return false;
             }
         }
 
@@ -236,7 +237,7 @@ use mysqli_sql_exception;
     protected function attributes(): array
     {
         $attributes = [];
-        foreach(static::$columns as $column) {
+        foreach($this->columns as $column) {
             if($column == 'id') { continue; }
             if (isset($this->$column)) {
                 $attributes[$column] = self::$database->escape_string($this->$column);
@@ -298,7 +299,7 @@ use mysqli_sql_exception;
     }
 
     protected function add_errors(array $temp_errors) : void {
-        $this->errors = array_merge($this->errors, $temp_errors);
+        $this->errors = array_merge($this->errors ?? [], $temp_errors);
     }
 
     protected function validate_const($val, array $const_arr, string $key) : bool {

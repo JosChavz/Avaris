@@ -1,7 +1,5 @@
 <?php
 
-include_once "../src/initialize.php";
-
 ob_start();
 
 ?>

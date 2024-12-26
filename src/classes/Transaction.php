@@ -6,8 +6,10 @@ use http\Exception\RuntimeException;
 
 class Transaction extends Database
 {
-    protected array $columns = ['id', 'uid', 'bid', 'name', 'amount', 'description', 'type', 'category'];
-    protected string $table_name = "transactions";
+    protected static string $table_name = "transactions";
+    protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category'];
+
+
     const TYPE = [
         'EXPENSE' => 'Expense',
         'INCOME' => 'Income',
@@ -32,29 +34,29 @@ class Transaction extends Database
     public int|null $budget_id;
 
     public function __construct(array $args = []) {
-      self::$columns = array_merge(parent::$columns, self::$columns);
       parent::__construct($args);
-        if (isset($args['uid'])) {
-            $this->uid = $args['uid'];
-        }
-        if (isset($args['bid'])) {
-            $this->set_bank_id($args['bid']);
-        }
-        if (isset($args['name'])) {
-            $this->set_name($args['name']);
-        }
-        if (isset($args['amount'])) {
-            $this->set_amount($args['amount']);
-        }
-        if (isset($args['description'])) {
-            $this->description = $args['description'];
-        }
-        if (isset($args['type'])) {
-            $this->validate_const($args['type'], self::TYPE, "type");
-        }
-        if (isset($args['category'])) {
-            $this->validate_const($args['category'], self::CATEGORY, "category");
-        }
+
+      if (isset($args['uid'])) {
+          $this->uid = $args['uid'];
+      }
+      if (isset($args['bid'])) {
+          $this->set_bank_id($args['bid']);
+      }
+      if (isset($args['name'])) {
+          $this->set_name($args['name']);
+      }
+      if (isset($args['amount'])) {
+          $this->set_amount($args['amount']);
+      }
+      if (isset($args['description'])) {
+          $this->description = $args['description'];
+      }
+      if (isset($args['type'])) {
+          $this->validate_const($args['type'], self::TYPE, "type");
+      }
+      if (isset($args['category'])) {
+          $this->validate_const($args['category'], self::CATEGORY, "category");
+      }
     }
 
     public function save(array $requires=["uid", "name", "amount", "type", "category"]) : bool {

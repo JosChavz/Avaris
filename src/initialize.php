@@ -23,20 +23,29 @@ if ($env['DEBUG']) {
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 // This is meant for the classes being imported later
-use classes\Bank;
-use classes\Database;
-use classes\Transaction;
-use classes\Session;
-//use interfaces\DatabaseTemplate;
-//foreach(glob(ROOT . 'src/interfaces/*.php') as $file) {
-//    require_once($file);
-//}
+use enums\UserRoles;
+foreach(glob(ROOT . 'src/enums/*.php') as $file) {
+    require_once($file);
+}
 
+// Loads up the middleware
+foreach(glob(ROOT . 'src/middleware/*.php') as $file) {
+    require_once($file);
+}
+
+use classes\Database;
 require_once("classes/Database.php");
+
+global $env;
+$database = new mysqli($env['DB_HOST'], $env['DB_USER'], $env['DB_PASS'], $env['DB_TABLE']);
+Database::set_database($database);
 
 require_once 'functions.php';
 
 // -> All classes in directory
+use classes\Bank;
+use classes\Transaction;
+use classes\Session;
 foreach(glob(ROOT . 'src/classes/*.php') as $file) {
     require_once($file);
 }

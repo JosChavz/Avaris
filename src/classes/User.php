@@ -2,45 +2,42 @@
 
 namespace classes;
 
+use enums\UserRoles;
+
 class User extends Database
 {
-    protected string $table_name = "users";
-    protected array $columns = ['id', 'name', 'email', 'hashed_password', 'role', 'friend_ids'];
-    const USER_ROLE = [
-        'ADMIN' => 'admin',
-        'USER' => 'user',
-    ];
+    protected static string $table_name = "users";
     public string $name;
     public string $email;
     public string $password;
     public string $confirm_password;
+    protected array $columns = ['name', 'email', 'hashed_password', 'role', 'friend_ids'];
 
     protected string $hashed_password;
-    public string $role = User::USER_ROLE['USER'];
+    public UserRoles $role = UserRoles::USER;
     protected bool $password_required = true;
 
     public function __construct(array $args=[]) {
-      # merge the two columns
-      self::$columns = array_merge(parent::$columns, self::$columns);
       parent::__construct($args);
-        if (array_key_exists('id', $args)) {
-            $this->id = $args['id'];
-        }
-        if (array_key_exists('name', $args)) {
-            $this->set_name($args['name']);
-        }
-        if (array_key_exists('password', $args)) {
-            $this->set_password($args['password']);
-        }
-        if (array_key_exists('email', $args)) {
-            $this->set_email($args['email']);
-        }
-        if (array_key_exists('role', $args)) {
-            $this->set_role($args['role']);
-        }
-        if (array_key_exists('confirm_password', $args)) {
-            $this->set_confirm_password($args['confirm_password']);
-        }
+
+      if (array_key_exists('id', $args)) {
+          $this->id = $args['id'];
+      }
+      if (array_key_exists('name', $args)) {
+          $this->set_name($args['name']);
+      }
+      if (array_key_exists('password', $args)) {
+          $this->set_password($args['password']);
+      }
+      if (array_key_exists('email', $args)) {
+          $this->set_email($args['email']);
+      }
+      if (array_key_exists('role', $args)) {
+          $this->set_role($args['role']);
+      }
+      if (array_key_exists('confirm_password', $args)) {
+          $this->set_confirm_password($args['confirm_password']);
+      }
     }
 
     /**
@@ -97,7 +94,7 @@ class User extends Database
 
     public function set_confirm_password(string $confirm_password): bool
     {
-        $confirm_password = trim($confirm_password);
+        $confirm_password = $confirm_password;
         $temp_errors = array();
 
         if (!isset($this->password)) {
@@ -137,7 +134,7 @@ class User extends Database
         $temp_errors = array();
         if (empty($role)) {
             $temp_errors[] = "Role cannot be empty";
-        } else if (!in_array($role, self::USER_ROLE)) {
+        } else if (!UserRoles::tryFrom($roles)) {
             $temp_errors[] = "Invalid role";
         } else {
             $this->role = $role;
@@ -157,22 +154,24 @@ class User extends Database
         return password_verify($password, $this->hashed_password);
     }
 
-    protected function create(array $requires = ['name', 'email', 'hashed_password', 'role']): bool
+    protected function create(array $requires=[]): bool
     {
-        $this->set_hashed_password();
-        return parent::create($requires);
+      $requires = ['name', 'email', 'hashed_password', 'role'];
+      $this->set_hashed_password();
+      return parent::create($requires);
     }
 
-    protected function update(array $requires = ['name', 'email', 'hashed_password', 'role']): bool
+    protected function update(array $requires = []): bool
     {
-        if($this->password != '') {
-            $this->set_hashed_password();
-            // validate password
-        } else {
-            // password not being updated, skip hashing and validation
-            $this->password_required = false;
-        }
-        return parent::update($requires);
+      $requires = ['name', 'email', 'hashed_password', 'role'];
+      if($this->password != '') {
+          $this->set_hashed_password();
+          // validate password
+      } else {
+          // password not being updated, skip hashing and validation
+          $this->password_required = false;
+      }
+      return parent::update($requires);
     }
 
     static public function find_by_username($username): Database | null

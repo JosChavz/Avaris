@@ -4,8 +4,8 @@ namespace classes;
 
 class Bank extends Database
 {
-    protected array $columns = ['id', 'uid', 'name', 'type'];
-    protected string $table_name = "banks";
+    protected static string $table_name = "banks";
+    protected array $columns = ['uid', 'name', 'type'];
 
     public int $uid;
     public string $name;
@@ -18,19 +18,20 @@ class Bank extends Database
     public function __construct(array $args=[])
     {
       parent::__construct($args);
+
       self::$columns = array_merge(parent::$columns, self::$columns);
-        if (array_key_exists('id', $args)) {
-            $this->id = $args['id'];
-        }
-        if (array_key_exists('uid', $args)) {
-            $this->uid = $args['uid'];
-        }
-        if (array_key_exists('name', $args)) {
-            $this->set_name($args['name']);
-        }
-        if (array_key_exists('type', $args)) {
-            $this->set_type($args['type']);
-        }
+      if (array_key_exists('id', $args)) {
+          $this->id = $args['id'];
+      }
+      if (array_key_exists('uid', $args)) {
+          $this->uid = $args['uid'];
+      }
+      if (array_key_exists('name', $args)) {
+          $this->set_name($args['name']);
+      }
+      if (array_key_exists('type', $args)) {
+          $this->set_type($args['type']);
+      }
     }
 
     /**

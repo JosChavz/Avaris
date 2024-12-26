@@ -3,8 +3,8 @@
 namespace classes;
 
 class Changelog extends Database {
-  protected string $table_name = 'changelog';
-  protected array $columns = array("title", "description");
+  protected static string $table_name = 'changelog';
+  protected array $columns = ['title', 'description'];
 
   // Columns
   public string $title;
@@ -12,6 +12,7 @@ class Changelog extends Database {
 
   function __construct(array $args=[]) {
     parent::__construct($args);
+
     self::$columns = array_merge(parent::$columns, $self::$columns);
   }
 

@@ -26,5 +26,6 @@ function log_out_user() {
     unset($_SESSION['user_role']);
     unset($_SESSION['last_login']);
     return true;
+}
 
 ?>
