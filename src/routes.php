@@ -2,7 +2,16 @@
 
 use enums\UserRoles;
 
-// Define your routes
+function user_redirect_dashboard() {
+  global $session;
+
+  // Redirect to dashboard
+  if ($session->is_logged_in()) {
+    h("/dashboard");
+    die(); 
+  }
+}
+
 Router::get('/dashboard', function($params) {
   global $session;
 
@@ -16,18 +25,12 @@ Router::get('/dashboard', function($params) {
 });
 
 Router::get('/auth/login', function($params) {
-    require_once ROOT . '/public/auth/login.php';
+  user_redirect_dashboard();  
+  require_once ROOT . '/public/auth/login.php';
 });
 
 Router::get('/', function($params) {
-  global $session;
-
-  // Redirect to dashboard
-  if ($session->is_logged_in()) {
-    h("/dashboard");
-    die(); 
-  }
-
+  user_redirect_dashboard();  
   require_once ROOT . '/public/index.php';
 });
 

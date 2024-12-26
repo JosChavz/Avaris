@@ -5,6 +5,7 @@ namespace classes;
 use AllowDynamicProperties;
 use mysqli;
 use mysqli_sql_exception;
+use enums\UserRoles;
 
 #[AllowDynamicProperties] class Database 
 {
@@ -227,7 +228,12 @@ use mysqli_sql_exception;
         $object = new static([]);
         foreach ($row as $key => $value) {
             if (property_exists($object, $key)) {
+              if ($key == "role") {
+              var_dump(UserRoles::tryFrom($value));
+                $object->$key = UserRoles::tryFrom($value);
+              } else {
                 $object->$key = $value;
+              }
             }
         }
 

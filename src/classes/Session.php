@@ -27,7 +27,7 @@ class Session
             session_regenerate_id();
             $_SESSION['user_id'] = $user->id;
             $_SESSION['user_name'] = $user->name;
-            $_SESSION['user_role'] = UserRoles::tryFrom($user->role);
+            $_SESSION['user_role'] = $user->role;
             $_SESSION['last_login'] = time();
             $this->user_id = $user->id;
         }

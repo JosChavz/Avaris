@@ -4,8 +4,8 @@ namespace enums;
 
 enum UserRoles : string
 {
-    case USER = 'user';
-    case ADMIN = 'admin';
+    case USER = 'USER';
+    case ADMIN = 'ADMIN';
 }
 
 ?>
