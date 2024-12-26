@@ -1,0 +1,6 @@
+{
+    "name": "avaris/avaris",
+    "require": {
+        "yassinedoghri/php-icons": "^1.2"
+    }
+}

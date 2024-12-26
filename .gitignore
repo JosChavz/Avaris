@@ -1,0 +1,6 @@
+.htaccess
+.htpasswd
+node_modules/
+
+/vendor/
+src/.env
