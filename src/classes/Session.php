@@ -72,7 +72,7 @@ class Session
             $this->user_name = $_SESSION['user_name'];
         }
         if (isset($_SESSION['user_role'])) {
-            $this->user_role = UserRoles::tryFrom($_SESSION['user_role']);
+          $this->user_role = $_SESSION['user_role'] ?? UserRoles::tryFrom($_SESSION['user_role']);
         }
         if (isset($_SESSION['last_login'])) {
             $this->last_login = $_SESSION['last_login'];

@@ -1,8 +1,33 @@
 <?php
 
+namespace Middleware;
+
 global $session;
 
 use Middleware\BaseMiddleware;
+use enums\UserRoles;
+
+class AuthMiddleware {
+  /**
+   * Checks to see if user logged in and has roles
+   */
+  public static function check(array|UserRoles $permittedRoles) {
+    global $session;
+
+    // Check to see if logged-in
+    if (!$session->is_logged_in()) {
+      return false; 
+    }
+
+    // Only one user role
+    if ($permittedRoles instanceof UserRoles) {
+      return $session->get_user_role() === $permittedRoles; 
+    } 
+    
+    return in_array($session->get_user_role(), $permittedRoles);
+  }
+
+}
 
 function authMiddleware($request, $next) {
     // Define protected routes and required roles
