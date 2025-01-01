@@ -72,22 +72,6 @@ class Router {
             $callback($params);
             return true;
           }
-
-          // Route is a PHP file
-          if (!is_dir(ROOT . "public" . $path)) {
-            $new_uri = $uri;
-
-            // Try with .php extension if not provided
-            if (!str_ends_with($new_uri, '.php')) {
-              $new_uri .= '.php';
-            }
-            
-            if (file_exists(ROOT . "public" . $new_uri)) {
-               $params = self::extractParams($matches);
-                $callback($params);
-                return true;
-            }
-          }
         }
 
         // Check for direct PHP file first

@@ -1,8 +1,5 @@
 <?php
 
-require_once("../src/initialize.php");
-require_once(ROOT . "/src/partials/credit-list.php");
-
 use partials\CreditListPartial;
 
 $title = "Credits";

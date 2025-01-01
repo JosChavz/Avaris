@@ -6,7 +6,9 @@ $title = "Dashboard";
 ob_start();
 ?>
 
-test
+<section>
+  <p>test</p>
+</section>
 
 <?php
   $content = ob_get_clean();

@@ -1,7 +1,4 @@
 <?php
-
-require_once("../src/initialize.php");
-
 $title = "404 Not Found";
 ob_start();
 

@@ -1,5 +1,5 @@
 import ApexCharts from 'apexcharts';
-
+(function() {
 const getMainChartOptions = () => {
 	let mainChartColors = {}
 
@@ -600,3 +600,4 @@ if (document.getElementById('traffic-by-device')) {
 	});
 }
 
+})()

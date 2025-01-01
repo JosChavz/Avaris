@@ -1,5 +1,4 @@
 <?php 
-require_once(ROOT . "/src/partials/alert.php"); 
 
 use partials\AlertPartial;
 
@@ -18,11 +17,12 @@ $message = $session->get_message();
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title><?php echo $title ?? "Avaris" ?></title>
   <link rel="stylesheet" href="/styles/global.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-  <script src='/js/darkmode.js' defer></script>
-  <script src='/js/sidebar.js' defer></script>
-  <script type="module" src='/js/charts.js' defer></script>
+  <link rel="stylesheet" href="/styles/dashboard.min.css">
+  <link rel="stylesheet" href="/styles/flowbite.min.css">
+  <script src='/js/darkmode.min.js' defer></script>
+  <script src='/js/flowbite.min.js' defer></script>
+  <script src='/js/sidebar.min.js' defer></script>
+  <script src='/js/charts.min.js' defer></script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-800">
   <?php include_once(ROOT . "/src/templates/dashboard-header.php"); ?>
@@ -30,7 +30,7 @@ $message = $session->get_message();
     <?php include_once(ROOT . "/src/templates/dashboard-aside.php"); ?>
   
     <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
-      <main>
+      <main class="px-8 py-8 min-h-svh">
         <?php if (count($errors)) echo AlertPartial::render_errors("Error", $errors); ?>
         <?php if ($message) echo AlertPartial::render_message("Success", $message); ?>
         <?php echo $content ?? "" ?>
@@ -39,7 +39,5 @@ $message = $session->get_message();
       <!-- Footer would go here -->
     </div>
   </div>
-
-  <script src="<?php echo ROOT; ?>/node_modules/flowbite/dist/flowbite.min.js"></script>
 </body>
 </html>
