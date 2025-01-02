@@ -7,6 +7,7 @@ class Session
 {
     private string $user_id;
     private string $user_name;
+    private string $user_email;
     private UserRoles $user_role = UserRoles::USER;
     private int $last_login;
     const MAX_LOGIN_AGE = 60 * 60 * 4; # 4 Hours
@@ -26,8 +27,9 @@ class Session
         if ($user) {
             session_regenerate_id();
             $_SESSION['user_id'] = $user->id;
-            $_SESSION['user_name'] = $user->name;
+            $_SESSION['user_name'] = html($user->name);
             $_SESSION['user_role'] = $user->role;
+            $_SESSION['user_email'] = html($user->email);
             $_SESSION['last_login'] = time();
             $this->user_id = $user->id;
         }
@@ -48,6 +50,8 @@ class Session
         unset($this->user_name);
         unset($_SESSION['user_role']);
         unset($this->user_role);
+        unset($_SESSION['user_email']);
+        unset($this->user_email);
         unset($_SESSION['last_login']);
         unset($this->last_login);
         return true;
@@ -69,10 +73,13 @@ class Session
             $this->user_id = $_SESSION['user_id'];
         }
         if (isset($_SESSION['user_name'])) {
-            $this->user_name = $_SESSION['user_name'];
+            $this->user_name = html($_SESSION['user_name']);
+        }
+        if (isset($_SESSION['user_email'])) {
+            $this->user_email = html($_SESSION['user_email']);
         }
         if (isset($_SESSION['user_role'])) {
-            $this->user_role = UserRoles::tryFrom($_SESSION['user_role']);
+          $this->user_role = $_SESSION['user_role'] ?? UserRoles::tryFrom($_SESSION['user_role']);
         }
         if (isset($_SESSION['last_login'])) {
             $this->last_login = $_SESSION['last_login'];
@@ -104,6 +111,14 @@ class Session
     /**
      * @return string
      */
+    public function get_user_email(): string
+    {
+        return $this->user_email;
+    }
+
+    /**
+     * @return string
+     */
     public function get_user_role(): UserRoles 
     {
         return $this->user_role;
@@ -111,7 +126,7 @@ class Session
 
     public function add_error(string $err) {
       $this->errors[] = $err;
-      $_SESSSION['errors'] = $this->errors; 
+      $_SESSION['errors'] = $this->errors; 
     }
 
     public function add_errors(array $errors) {

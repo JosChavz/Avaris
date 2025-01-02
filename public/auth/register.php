@@ -1,9 +1,5 @@
 <?php
 
-if (!defined('ROOT')) {
-  require_once("../../src/initialize.php");
-}
-
 use classes\User;
 global $session;
 

@@ -1,5 +1,13 @@
 {
-    "name": "avaris/avaris",
+    "name": "joschavz/avaris",
+    "autoload": {
+      "psr-4": {
+        "classes\\": "src/classes/",
+        "enums\\": "src/enums/",
+        "partials\\": "src/partials/",
+        "middleware\\": "src/middleware/"
+      }
+    },
     "require": {
         "yassinedoghri/php-icons": "^1.2"
     }

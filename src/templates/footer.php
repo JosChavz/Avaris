@@ -1,6 +1,5 @@
 <?php 
 
-require_once(ROOT . "/src/partials/footer.php"); 
 use partials\FooterPartial;
 
 ?>  
