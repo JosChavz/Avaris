@@ -7,7 +7,7 @@ class Session
 {
     private string $user_id;
     private string $user_name;
-    private string $user_email = "";
+    private string $user_email;
     private UserRoles $user_role = UserRoles::USER;
     private int $last_login;
     const MAX_LOGIN_AGE = 60 * 60 * 4; # 4 Hours
@@ -27,9 +27,9 @@ class Session
         if ($user) {
             session_regenerate_id();
             $_SESSION['user_id'] = $user->id;
-            $_SESSION['user_name'] = $user->name;
+            $_SESSION['user_name'] = html($user->name);
             $_SESSION['user_role'] = $user->role;
-            $_SESSION['user_email'] = $user->email;
+            $_SESSION['user_email'] = html($user->email);
             $_SESSION['last_login'] = time();
             $this->user_id = $user->id;
         }
@@ -73,10 +73,10 @@ class Session
             $this->user_id = $_SESSION['user_id'];
         }
         if (isset($_SESSION['user_name'])) {
-            $this->user_name = $_SESSION['user_name'];
+            $this->user_name = html($_SESSION['user_name']);
         }
         if (isset($_SESSION['user_email'])) {
-            $this->user_name = $_SESSION['user_email'];
+            $this->user_email = html($_SESSION['user_email']);
         }
         if (isset($_SESSION['user_role'])) {
           $this->user_role = $_SESSION['user_role'] ?? UserRoles::tryFrom($_SESSION['user_role']);

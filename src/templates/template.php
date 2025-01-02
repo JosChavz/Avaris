@@ -16,7 +16,7 @@ $message = $session->get_message();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title><?php echo $title ?? "Avaris" ?></title>
- <link rel="stylesheet" href="/styles/global.min.css">
+  <link rel="stylesheet" href="/styles/global.min.css">
   <link rel="stylesheet" href="/styles/dashboard.min.css">
   <link rel="stylesheet" href="/styles/flowbite.min.css">
   <script src='/js/darkmode.min.js' defer></script>
@@ -24,7 +24,7 @@ $message = $session->get_message();
 </head>
 <body class="<?php echo $bg_color ?? "" ?>">
   <?php include_once "header.php" ?>
-  <div class="container mx-auto my-12">
+  <div class="container mx-auto my-12 px-4">
     <?php if (count($errors)) echo AlertPartial::render_errors("Error", $errors); ?>
     <?php if ($message) echo AlertPartial::render_message("Success", $message); ?>
     <?php echo $content ?? ""?>
