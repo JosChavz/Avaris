@@ -3,14 +3,22 @@
 namespace partials;
 
 use enums\TransactionType;
+use classes\Transaction;
 use enums\ExpenseType;
 
 class TransactionFormPartial {
   
   /***
-   * 
+   * @param mixed[]         $args Array with all properties to create a `Transaction` object
+   *                              and will be used to prefill any fields if data exists and 
+   *                              is valid
+   * @param TransactionType $type The type of transaction to which will determine which
+   *                              form to use
+   * @return string Template that was requested to render for CREATE/UPDATE actions with
+   *                any prefilled data if `$args` is present
    ***/
-  public static function render_form(array $args, TransactionType $type) : string {
+  public static function render_form(Transaction $args, TransactionType $type) : string {
+    var_dump(ExpenseType::cases());
     ob_start();
   ?>
     <!-- Process the document in the same page -->
@@ -29,14 +37,14 @@ class TransactionFormPartial {
             <input type="number" name="price" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="2999" placeholder="$299" required="">
         </div>
         <div>
-            <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
-            <select id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                <option selected="">Electronics</option>
-                <option value="TV">TV/Monitors</option>
-                <option value="PC">PC</option>
-                <option value="GA">Gaming/Console</option>
-                <option value="PH">Phones</option>
-            </select>
+          <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
+          <select id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+              <option selected="">Electronics</option>
+              <option value="TV">TV/Monitors</option>
+              <option value="PC">PC</option>
+              <option value="GA">Gaming/Console</option>
+              <option value="PH">Phones</option>
+          </select>
         </div>
         <div>
             <label for="item-weight" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Item Weight (kg)</label>
