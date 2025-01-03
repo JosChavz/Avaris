@@ -3,34 +3,20 @@
 namespace classes;
 
 use http\Exception\RuntimeException;
+use enums\ExpenseType;
+use enums\TransactionType;
 
 class Transaction extends Database
 {
     protected static string $table_name = "transactions";
     protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category'];
-
-
-    const TYPE = [
-        'EXPENSE' => 'Expense',
-        'INCOME' => 'Income',
-    ];
-    const CATEGORY = [
-        'DINING' => 'Dining',
-        'ENTERTAINMENT' => 'Entertainment',
-        'GROCERIES' => 'Groceries',
-        'BILLS' => 'Bills',
-        'SHOPPING' => 'Shopping',
-        'TRANSPORTATION' => 'Transportation',
-        'WORK' => 'Work',
-        'TRAVEL' => 'Travel',
-    ];
     public int $uid;
     public int|null $bid;
     public string $name;
     public float $amount;
     public string $description;
     public string $type;
-    public string $category;
+    public ExpenseType $category;
     public int|null $budget_id;
 
     public function __construct(array $args = []) {
@@ -52,10 +38,18 @@ class Transaction extends Database
           $this->description = $args['description'];
       }
       if (isset($args['type'])) {
-          $this->validate_const($args['type'], self::TYPE, "type");
+        try {
+          $this->type = ExpenseType::from($args['type']);
+        } catch(Exception $e) {
+          $this->errors[] = "Invalid type";
+        }
       }
       if (isset($args['category'])) {
-          $this->validate_const($args['category'], self::CATEGORY, "category");
+        try {
+          $this->category = ExpenseType::from($args['category']);
+        } catch(Exception $e) {
+          $this->errors[] = "Invalid category";
+        }
       }
     }
 

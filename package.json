@@ -8,6 +8,7 @@
     "test": "tests"
   },
   "scripts": {
+    "composer": "composer dump-autoload",
     "build:css": "npx tailwindcss -i ./public/styles/global.css -i ./public/styles/dashboard.css -o ./public/styles/global.min.css -o ./public/styles/dashboard.min.css --minify",
     "watch:css": "npx tailwindcss -i ./public/styles/global.css -i ./public/styles/dashboard.css -o ./public/styles/global.min.css -o ./public/styles/dashboard.min.css --watch --minify",
     "build:js": "vite build",
