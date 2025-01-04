@@ -39,15 +39,15 @@ class Transaction extends Database
       }
       if (isset($args['type'])) {
         try {
-          $this->type = ExpenseType::from($args['type']);
-        } catch(Exception $e) {
+          $this->type = TransactionType::from($args['type']);
+        } catch(\Error $e) {
           $this->errors[] = "Invalid type";
         }
       }
       if (isset($args['category'])) {
         try {
           $this->category = ExpenseType::from($args['category']);
-        } catch(Exception $e) {
+        } catch(\Error $e) {
           $this->errors[] = "Invalid category";
         }
       }
