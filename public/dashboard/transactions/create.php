@@ -13,11 +13,18 @@ use partials\TransactionFormPartial;
 $transaction = new Transaction();
 
 if (is_post_request()) {
-  var_dump($_POST['transaction']);
-  $transaction = new Transaction($_POST['transaction']);
+  $args = $_POST['transaction'];
+  $args['uid'] = $session->get_user_id();
+  $transaction = new Transaction($args);
 
   if (empty($transaction->errors)) {
-  
+    if ($transaction->save()) {
+      $session->add_message("Successfully created transaction");
+      h("/dashboard/transactions/");
+      die();
+    } else {
+     $session->add_errors($transaction->errors);
+    } 
   } else {
     $session->add_errors($transaction->errors);
   }

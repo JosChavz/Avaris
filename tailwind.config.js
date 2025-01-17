@@ -68,10 +68,6 @@ export default {
     },
   },
   plugins: [
-    flowbitePlugin({
-      charts: true,
-      forms: true,
-      tooltips: true
-    }),
+    flowbitePlugin(),
   ],
 } satisfies Config;

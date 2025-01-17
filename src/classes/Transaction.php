@@ -15,8 +15,8 @@ class Transaction extends Database
     public string $name;
     public float $amount;
     public string $description;
-    public string $type;
-    public ExpenseType $category;
+    public TransactionType $type;
+    public ExpenseType|null $category;
     public int|null $budget_id;
 
     public function __construct(array $args = []) {
@@ -53,9 +53,27 @@ class Transaction extends Database
       }
     }
 
-    public function save(array $requires=["uid", "name", "amount", "type", "category"]) : bool {
-        $this->created_at = date("Y-m-d");
-        return parent::save($requires);
+    static protected function instantiate($row): Transaction
+    {
+      $object = new static([]);
+      foreach ($row as $key => $value) {
+        if (property_exists($object, $key)) {
+          if ($key == 'type') {
+            $object->$key = TransactionType::from(strtolower($value));
+          } else if ($key == 'category') {
+            $object->$key = ExpenseType::tryFrom(strtolower($value ?? ''));
+          } else {
+            $object->$key = $value;
+          }
+        }
+      }
+
+      return $object;
+    }
+
+    public function save(array $requires=["uid", "name", "amount", "type"]) : bool {
+      if ($this->type == TransactionType::EXPENSE) $requires[] = 'category';
+      return parent::save($requires);
     }
 
     public function set_bank_id(int|string $bid) : bool
@@ -68,21 +86,21 @@ class Transaction extends Database
     }
 
     public function set_name(string $name) {
-        $name = trim($name);
-        $temp_errors = array();
+      $name = trim($name);
+      $temp_errors = array();
 
-        $pattern = "#^[a-zA-Z '\"/.]{2,40}$#";
+      $pattern = "#^[a-zA-Z '\"/.]{2,40}$#";
 
-        if (empty($name)) {
-            $temp_errors[] = "Expense name cannot be empty";
-        } else if (!preg_match($pattern, $name)) {
-            $temp_errors[] = "Invalid expense name. Please be a non-numerical name with a size of 2-40 characters";
-        } else {
-            $this->name = $name;
-        }
+      if (empty($name)) {
+          $temp_errors[] = "Expense name cannot be empty";
+      } else if (!preg_match($pattern, $name)) {
+          $temp_errors[] = "Invalid expense name. Please be a non-numerical name with a size of 2-40 characters";
+      } else {
+          $this->name = $name;
+      }
 
-        $this->add_errors($temp_errors);
-        return count($temp_errors) == 0;
+      $this->add_errors($temp_errors);
+      return count($temp_errors) == 0;
     }
 
     public function set_amount(int|float $amount) {
@@ -123,7 +141,23 @@ class Transaction extends Database
         return self::find_by_sql($sql);
     }
 
-    public static function select_summation(int $user_id, string $type, array $args=[]) : string {
+    /***
+     * User summation of expenses
+     * @param int   $user_id  User ID
+     * @param array $cats     Category from ExpenseType enum
+     * @param array $args     Extra arguments with the schema: 
+     *                        [
+     *                          bank_id : int
+     *                          year    : int
+     *                          month   : int
+     *                        ] 
+     ***/
+    public static function select_summation(int $user_id, array $cats=[], array $args=[]) : float {
+      $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND type='EXPENSE'"; 
+      return 1;
+    }
+
+    public static function select_summation2(int $user_id, string $type, array $args=[]) : string {
         $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND type='" . self::$database->escape_string($type) . "'";
         if (isset($args['bank_id'])) {
             $sql .= " AND bid=" . self::$database->escape_string($args['bank_id']);
@@ -143,11 +177,6 @@ class Transaction extends Database
 
     public static function select_all_type_summation(int $user_id, array $cats=[], array $args=[]) : array {
         $type_summations = array();
-
-        // defaults to CATEGORY
-        if (empty($cats)) {
-            $cats = static::CATEGORY;
-        }
 
         foreach ($cats as $cat) {
             $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND category='" . self::$database->escape_string($cat) . "'";

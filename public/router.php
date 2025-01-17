@@ -65,8 +65,16 @@ class Router {
         // Check routes
         $routes = self::$routes[$method] ?? [];
         foreach ($routes as $path => $callback) {
+          // Exact match to routes def
           $pattern = self::convertPathToRegex($path);
-          // Exact match
+          if (preg_match($pattern, $uri, $matches)) {
+            $params = self::extractParams($matches);
+            $callback($params);
+            return true;
+          }
+
+          // Some routes can be a PHP file
+          $pattern = self::convertPathToRegex($path . '.php');
           if (preg_match($pattern, $uri, $matches)) {
             $params = self::extractParams($matches);
             $callback($params);
@@ -114,9 +122,13 @@ class Router {
     }
 
     private static function convertPathToRegex(string $path): string {
-        // Convert :param to named capture groups
-        $pattern = preg_replace('/\:([a-zA-Z]+)/', '(?P<$1>[^\/]+)', $path);
-        return '/^' . str_replace('/', '\/', $pattern) . '$/';
+      // First escape any special regex characters in the path
+      $path = preg_quote($path, '/');
+      // Then convert our :param markers to regex groups
+      // We need to handle the escaped colon from preg_quote
+      $pattern = preg_replace('/\\\:([a-zA-Z]+)/', '(?P<$1>[^\/]+)', $path);
+      
+     return '/^' . $pattern . '$/';
     }
 
     private static function extractParams(array $matches): array {

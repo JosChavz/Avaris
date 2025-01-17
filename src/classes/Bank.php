@@ -2,6 +2,8 @@
 
 namespace classes;
 
+use enums\BankType;
+
 class Bank extends Database
 {
     protected static string $table_name = "banks";
@@ -10,10 +12,6 @@ class Bank extends Database
     public int $uid;
     public string $name;
     public string $type;
-    const BANK_TYPE = [
-        'DEBIT' => 'DEBIT',
-        'CREDIT' => 'CREDIT',
-    ];
 
     public function __construct(array $args=[])
     {
@@ -30,7 +28,11 @@ class Bank extends Database
           $this->set_name($args['name']);
       }
       if (array_key_exists('type', $args)) {
-          $this->set_type($args['type']);
+        try {
+          $this->type = BankType::from($args['type']);
+        } catch (\Error $e) {
+          $this->errors[] = "Invalid bank type";
+        }
       }
     }
 

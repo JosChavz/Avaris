@@ -23,6 +23,11 @@ $message = $session->get_message();
   <script src='/js/flowbite.min.js' defer></script>
   <script src='/js/sidebar.min.js' defer></script>
   <script src='/js/charts.min.js' defer></script>
+  <?php 
+    foreach ($extra_deps ?? [] as $dep) {
+      echo $dep;
+    }
+  ?>
 </head>
 <body class="bg-gray-50 dark:bg-gray-800">
   <?php include_once(ROOT . "/src/templates/dashboard-header.php"); ?>
