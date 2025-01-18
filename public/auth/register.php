@@ -10,8 +10,6 @@ $bg_color = "bg-gray-50 dark:bg-gray-700";
 
 if (is_post_request()) {
     $user = new User($_POST['user']);
-    $session->add_errors( $user->errors );
-
 
     if (empty($user->errors)) {
       // Check to see if the account exists
@@ -88,11 +86,11 @@ ob_start();
                   </div>
                   <button 
                     type="submit" 
-                    class="w-full text-black dark:text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    class="w-full text-white !bg-primary-600 hover:!bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                     Create an account
                   </button>
                   <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                      Already have an account? <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
+                      Already have an account? <a href="/auth/login" class="text-primary-600 hover:underline dark:text-primary-500">Login here</a>
                   </p>
               </form>
           </div>

@@ -23,6 +23,11 @@ $message = $session->get_message();
   <script src='/js/flowbite.min.js' defer></script>
   <script src='/js/sidebar.min.js' defer></script>
   <script src='/js/charts.min.js' defer></script>
+  <?php 
+    foreach ($extra_deps ?? [] as $dep) {
+      echo $dep;
+    }
+  ?>
 </head>
 <body class="bg-gray-50 dark:bg-gray-800">
   <?php include_once(ROOT . "/src/templates/dashboard-header.php"); ?>
@@ -30,7 +35,7 @@ $message = $session->get_message();
     <?php include_once(ROOT . "/src/templates/dashboard-aside.php"); ?>
   
     <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
-      <main class="px-8 py-8 min-h-svh">
+      <main class="px-12 py-14 min-h-svh">
         <?php if (count($errors)) echo AlertPartial::render_errors("Error", $errors); ?>
         <?php if ($message) echo AlertPartial::render_message("Success", $message); ?>
         <?php echo $content ?? "" ?>

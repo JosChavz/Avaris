@@ -33,11 +33,31 @@ class User extends Database
           $this->set_email($args['email']);
       }
       if (array_key_exists('role', $args)) {
-          $this->set_role($args['role']);
+        try {
+          $this->role = UserRoles::from($args['role']);
+        } catch(\Error $e) {
+          $this->errors[] = "Invalid role"; 
+        }
       }
       if (array_key_exists('confirm_password', $args)) {
           $this->set_confirm_password($args['confirm_password']);
       }
+    }
+
+    static protected function instantiate($row): User
+    {
+      $object = new static([]);
+      foreach ($row as $key => $value) {
+        if (property_exists($object, $key)) {
+          if ($key == 'role') {
+            $object->$key = UserRoles::from(strtolower($value));
+          } else {
+            $object->$key = $value;
+          }
+        }
+      }
+
+      return $object;
     }
 
     /**
@@ -123,21 +143,6 @@ class User extends Database
             $temp_errors[] = "Invalid email format";
         } else {
             $this->email = $email;
-        }
-
-        $this->add_errors($temp_errors);
-        return count($temp_errors) === 0;
-    }
-
-    public function set_role(string $role): bool {
-        $role = trim($role);
-        $temp_errors = array();
-        if (empty($role)) {
-            $temp_errors[] = "Role cannot be empty";
-        } else if (!UserRoles::tryFrom($roles)) {
-            $temp_errors[] = "Invalid role";
-        } else {
-            $this->role = $role;
         }
 
         $this->add_errors($temp_errors);

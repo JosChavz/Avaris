@@ -8,8 +8,9 @@
     "test": "tests"
   },
   "scripts": {
-    "build:css": "npx tailwindcss -i ./public/styles/global.css -i ./public/styles/dashboard.css -o ./public/styles/global.min.css -o ./public/styles/dashboard.min.css --minify",
-    "watch:css": "npx tailwindcss -i ./public/styles/global.css -i ./public/styles/dashboard.css -o ./public/styles/global.min.css -o ./public/styles/dashboard.min.css --watch --minify",
+    "composer": "composer dump-autoload",
+    "build:css": "npx tailwindcss -i ./public/styles/global.css -i ./public/styles/dashboard.css -i ./public/styles/font.css -o ./public/styles/global.min.css -o ./public/styles/dashboard.min.css -o ./public/styles/font.min.css --minify",
+    "watch:css": "npx tailwindcss -i ./public/styles/global.css -i ./public/styles/dashboard.css -i ./public/styles/font.css -o ./public/styles/global.min.css -o ./public/styles/dashboard.min.css -o ./public/styles/font.min.css --watch --minify",
     "build:js": "vite build",
     "watch:js": "vite build --watch",
     "test": "echo \"Error: no test specified\" && exit 1"

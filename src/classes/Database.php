@@ -21,9 +21,7 @@ use enums\UserRoles;
     public $updated_at;
 
     function __construct(array $args=[]) {
-      $id = $args['id'] ?? '';
-      $created_at = $args['created_at'] ?? date('Y-m-d H:i:s');
-      $updated_at = $args['updated_at'] ?? date('Y-m-d H:i:s');
+      $this->id = $args['id'] ?? '';
     }
 
     public static function set_database($database) : void {
@@ -45,7 +43,7 @@ use enums\UserRoles;
         // results into objects
         $object_array = [];
         while($record = $result->fetch_assoc()) {
-            $object_array[] = self::instantiate($record);
+            $object_array[] = static::instantiate($record);
         }
 
         $result->free();
@@ -78,23 +76,40 @@ use enums\UserRoles;
     }
 
     /**
-     * @param $user_id
+     * Will return all database objects, if exists, using the user's ID 
+     * using ASC in date by default
+     * @param int   $user_id  The User ID
+     * @param array $args     Any extra arguments with schema:
+     *                        {
+     *                          asc   : boolean;
+     *                          month : int;
+     *                          year  : int;
+     *                        }
      * @return Database[]
      */
-    static function find_by_user_id($user_id) : array {
-        $sql = "SELECT * FROM " . static::$table_name . " WHERE uid="
-            . self::$database->escape_string($user_id) . ";";
-        return self::find_by_sql($sql);
+    static function find_by_user_id(int $user_id, array $args=[]) : array {
+      $order = ((isset($args['asc']) && $args['asc']) ? 'ASC' : 'DESC');
+
+      $sql = "SELECT * FROM " . static::$table_name . " WHERE uid="
+        . self::$database->escape_string($user_id);
+
+      if (isset($args['month']) && is_int($args['month'])) $sql .= " AND month(created_at)=" . $args['month'];
+      if (isset($args['year']) && is_int($args['year'])) $sql .= " AND year(created_at)=" . $args['year'];
+
+      $sql .= " ORDER BY created_at " . $order . ";";
+      return self::find_by_sql($sql);
     }
 
     /**
-     * @param $bank_id int
+     * Will find the object in database referencing the ID and user's ID 
+     * used for authentication purposes
+     * @param $id int
      * @param $user_id int
      * @return Database | null
      */
-    static function find_by_id(int $bank_id, int $user_id) : Bank | null {
+    static function find_by_id_auth(int $id, int $user_id) : Database | null {
         $sql = "SELECT * FROM " . static::$table_name . " WHERE id="
-            . self::$database->escape_string($bank_id)
+            . self::$database->escape_string($id)
             . " AND uid=" . self::$database->escape_string($user_id) . " LIMIT 1;";
 
         $res = self::find_by_sql($sql);
@@ -155,6 +170,7 @@ use enums\UserRoles;
 
         $sql = "UPDATE " . static::$table_name . " SET ";
         $sql .= implode(', ', $key_val_attr);
+        $sql .= ", updated_at='" . date('Y-m-d H:i:s') . "'";
         $sql .= " WHERE id="
             . self::$database->escape_string($this->id)
             . " LIMIT 1;";
@@ -162,7 +178,7 @@ use enums\UserRoles;
         try {
             self::$database->query($sql);
         } catch (mysqli_sql_exception $e) {
-            $this->errors = "Unable to add transaction";
+            $this->errors[] = "Unable to add transaction";
         }
 
         return (self::$database->affected_rows) >= 0;
@@ -182,10 +198,10 @@ use enums\UserRoles;
      * @return bool
      */
     public function save(array $requires=[]) : bool {
-      if (isset($this->id)) {
-          return $this->update($requires);
+      if (isset($this->id) && !empty($this->id)) {
+        return $this->update($requires);
       } else {
-          return $this->create($requires);
+        return $this->create($requires);
       }
     }
 
@@ -223,13 +239,17 @@ use enums\UserRoles;
         return true;
     }
 
+    // TODO : Figure out how to dynamically assign enums
+    //      Might need to define child function for classes that uses enums
+    //      This will be a generic function
     static protected function instantiate($row): Database
     {
         $object = new static([]);
         foreach ($row as $key => $value) {
             if (property_exists($object, $key)) {
+              // NOTE: How to dynamically assign an enum to a variable
+              //      without any overloading
               if ($key == "role") {
-              var_dump(UserRoles::tryFrom($value));
                 $object->$key = UserRoles::tryFrom($value);
               } else {
                 $object->$key = $value;
@@ -246,7 +266,15 @@ use enums\UserRoles;
         foreach($this->columns as $column) {
             if($column == 'id') { continue; }
             if (isset($this->$column)) {
-                $attributes[$column] = self::$database->escape_string($this->$column);
+              try {
+                $attributes[$column] = self::$database->real_escape_string($this->$column);
+              } catch(\TypeError $e) {
+                // Error due to being an enum
+                // NOTE: Is this safe? Should I make a parent enum in my dir and extend
+                // all enums so that I can check if $this->$column == parent_enum 
+                // to prevent any other errors
+                $attributes[$column] = $this->$column->value;
+              }
             }
         }
         return $attributes;

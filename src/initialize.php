@@ -32,4 +32,8 @@ require_once 'functions.php';
 
 $session = new Session();
 
+// TEMPLATES
+define("TEMPLATE_OUTER", ROOT . '/src/templates/template.php');
+define("TEMPLATE_DASHBOARD", ROOT . '/src/templates/dashboard-template.php');
+
 ?>
