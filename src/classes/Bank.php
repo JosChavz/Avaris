@@ -11,13 +11,12 @@ class Bank extends Database
 
     public int $uid;
     public string $name;
-    public string $type;
+    public BankType $type;
 
     public function __construct(array $args=[])
     {
       parent::__construct($args);
 
-      self::$columns = array_merge(parent::$columns, self::$columns);
       if (array_key_exists('id', $args)) {
           $this->id = $args['id'];
       }
@@ -34,6 +33,22 @@ class Bank extends Database
           $this->errors[] = "Invalid bank type";
         }
       }
+    }
+
+    static protected function instantiate($row): Bank
+    {
+      $object = new static([]);
+      foreach ($row as $key => $value) {
+        if (property_exists($object, $key)) {
+          if ($key == 'type') {
+            $object->$key = BankType::from(strtolower($value));
+          } else {
+            $object->$key = $value;
+          }
+        }
+      }
+
+      return $object;
     }
 
     /**

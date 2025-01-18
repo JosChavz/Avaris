@@ -2,8 +2,12 @@
 
 global $session;
 use classes\Transaction;
+use classes\Bank;
+use partials\BankRowPartial;
 
 $title = "Banks";
+$banks = Bank::find_by_user_id($session->get_user_id());
+
 ob_start();
 ?>
 
@@ -15,7 +19,7 @@ ob_start();
   <!-- Card header -->
   <div class="items-center justify-between lg:flex">
     <div class="items-center sm:flex w-full">
-      <a href="./create.php" 
+      <a href="./create" 
         class="mr-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"> 
           Add new bank
       </a>
@@ -30,7 +34,6 @@ ob_start();
           <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
             <thead class="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th scope="col" class="tracking-wider"></th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Name
                 </th>
@@ -47,8 +50,13 @@ ob_start();
             </thead>
             <tbody class="bg-white dark:bg-gray-800">
             <?php 
-              foreach($banks as $bank) {
-                echo TransactionRowPartial::render_row($bank); 
+              foreach($banks ?? [] as $bank) {
+                $sum = Transaction::select_summation($session->get_user_id(), [], array(
+                  "bank_id" => $bank->id,
+                  "year"    => date('Y'),
+                  "month"   => date('m'),
+                ));
+                echo BankRowPartial::render_row($bank, $sum); 
               } 
             ?>              
             </tbody>

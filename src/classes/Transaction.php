@@ -25,8 +25,9 @@ class Transaction extends Database
       if (isset($args['uid'])) {
           $this->uid = $args['uid'];
       }
-      if (isset($args['bid'])) {
-          $this->set_bank_id($args['bid']);
+      if (isset($args['bid']) && !empty($args['bid'])) {
+        var_dump($args['bid']);
+          $this->set_bank_id((int)$args['bid']);
       }
       if (isset($args['name'])) {
           $this->set_name($args['name']);
@@ -154,7 +155,22 @@ class Transaction extends Database
      ***/
     public static function select_summation(int $user_id, array $cats=[], array $args=[]) : float {
       $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND type='EXPENSE'"; 
-      return 1;
+      if (isset($args['bank_id'])) {
+          $sql .= " AND bid=" . self::$database->escape_string($args['bank_id']);
+      }
+      if (isset($args['year'])) {
+          $sql .= " AND YEAR(created_at) = " . self::$database->escape_string($args['year']);
+      }
+      if (isset($args['month'])) {
+          $sql .= " AND MONTH(created_at) = " . self::$database->escape_string($args['month']);
+      }
+
+      $sql .= ";";
+      $result = self::$database->query($sql);
+      $row = $result->fetch_assoc();
+      $result->free();
+
+      return array_shift($row) ?? 0;
     }
 
     public static function select_summation2(int $user_id, string $type, array $args=[]) : string {
