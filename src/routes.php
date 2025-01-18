@@ -74,6 +74,18 @@ Router::post('/dashboard/transactions/edit/:id', function($params) {
   extract(['transaction' => $transaction]);
   require_once ROOT . '/public/dashboard/transactions/edit.php';
 });
+
+Router::get('/dashboard/transactions/delete/:id', function($params) {
+  $transaction = is_users_object($params['id']);
+  extract(['transaction' => $transaction]);
+  require_once ROOT . '/public/dashboard/transactions/delete.php';
+});
+
+Router::post('/dashboard/transactions/delete/:id', function($params) {
+  $transaction = is_users_object($params['id']);
+  extract(['transaction' => $transaction]);
+  require_once ROOT . '/public/dashboard/transactions/delete.php';
+});
 // Add more routes as needed
 //
 ?>
