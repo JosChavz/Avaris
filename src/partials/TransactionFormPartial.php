@@ -74,7 +74,7 @@ class TransactionFormPartial {
             <option value="">Cash</option>
           <?php foreach($banks as $bank) : ?>
             <option 
-              <?php echo (($transaction->bid == $bank->id) ? "selected" : "")  ?>
+              <?php echo ((isset($transaction->bid) && ($transaction->bid == $bank->id)) ? "selected" : "")  ?>
               value="<?php echo $bank->id ?>"><?php echo $bank->name ?></option>
           <?php endforeach; ?>
           </select>

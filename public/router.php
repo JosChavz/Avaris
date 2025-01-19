@@ -18,7 +18,11 @@ class Router {
       array(
         'dir'   => '/admin/',
         'roles' => UserRoles::ADMIN
-      ) 
+      ),
+      array(
+        'dir'   => '/api/',
+        'roles' => [UserRoles::ADMIN, UserRoles::USER]
+      ), 
     ];
 
     public static function get(string $path, callable $callback) {
@@ -27,6 +31,10 @@ class Router {
 
     public static function post(string $path, callable $callback) {
         self::$routes['POST'][$path] = $callback;
+    }
+
+    public static function apiGet($path, $callback) {
+      self::$apiRoutes['GET'][$path] = $callback;
     }
 
     public static function dispatch(string $uri, string $method = 'GET') {
@@ -121,6 +129,37 @@ class Router {
         return false;
     }
 
+    public static function dispatchAPI($uri, $method) {
+      // MUST be logged-in for API calls
+      if(!$session->is_logged_in()) {
+        return false;
+      }
+
+      $uri = substr($uri, 4);
+
+      // Check routes
+      $routes = self::$routes[$method] ?? [];
+      foreach ($routes as $path => $callback) {
+        // Exact match to routes def
+        $pattern = self::convertPathToRegex($path);
+        if (preg_match($pattern, $uri, $matches)) {
+          $params = self::extractParams($matches);
+          $callback($params);
+          return true;
+        }
+
+        // Some routes can be a PHP file
+        $pattern = self::convertPathToRegex($path . '.php');
+        if (preg_match($pattern, $uri, $matches)) {
+          $params = self::extractParams($matches);
+          $callback($params);
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     private static function convertPathToRegex(string $path): string {
       // First escape any special regex characters in the path
       $path = preg_quote($path, '/');
@@ -144,15 +183,26 @@ class Router {
 
 // Load routes
 require_once ROOT . '/src/routes.php';
+require_once ROOT . '/src/apiRoutes.php';
 
 // Dispatch the request
-if (!Router::dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])) {
-    // If no route matched and it's not a file, show 404
-    if (!file_exists(__DIR__ . $_SERVER['REQUEST_URI'])) {
-      http_response_code(404);
-      h("/404.php");
-      die();
-    }
+if (strpos($_SERVER['REQUEST_URI'], '/api') === 0) {
+  // Handle API routes
+  if (!Router::dispatchAPI($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])) {
+    // If no API route matched, return 404 JSON response
+    http_response_code(404);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'API endpoint not found']);
+    die();
+  }
+} else {
+  if (!Router::dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])) {
+      // If no route matched and it's not a file, show 404
+      if (!file_exists(__DIR__ . $_SERVER['REQUEST_URI'])) {
+        http_response_code(404);
+        h("/404.php");
+        die();
+      }
+  }
 }
-
 ?>

@@ -101,11 +101,27 @@ Router::get('/dashboard/banks/view/:id', function($params) {
   require_once ROOT . '/public/dashboard/banks/view.php';
 });
 
-Router::get('/dashboard/banks/view/:id', function($params) {
+Router::get('/dashboard/banks/edit/:id', function($params) {
   $bank = is_users_bank($params['id']);
   extract(['bank' => $bank]);
-  require_once ROOT . '/public/dashboard/banks/view.php';
+  require_once ROOT . '/public/dashboard/banks/edit.php';
 });
 
+Router::post('/dashboard/banks/edit/:id', function($params) {
+  $bank = is_users_bank($params['id']);
+  extract(['bank' => $bank]);
+  require_once ROOT . '/public/dashboard/banks/edit.php';
+});
 
+Router::get('/dashboard/banks/delete/:id', function($params) {
+  $bank = is_users_bank($params['id']);
+  extract(['bank' => $bank]);
+  require_once ROOT . '/public/dashboard/banks/delete.php';
+});
+
+Router::post('/dashboard/banks/delete/:id', function($params) {
+  $bank = is_users_bank($params['id']);
+  extract(['bank' => $bank]);
+  require_once ROOT . '/public/dashboard/banks/delete.php';
+});
 ?>

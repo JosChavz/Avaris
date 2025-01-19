@@ -9,7 +9,7 @@ ob_start();
 ?>
 
 <?php echo BreadcrumbPartial::render_breadcrumb(array([
-  'name'  => 'Transactions',
+  'name'  => 'Banks',
   'url'   => '/dashboard/banks/',
 ], [
   'name' => 'View',
@@ -21,7 +21,6 @@ ob_start();
 
 
 <?php 
-
 $content = ob_get_clean();
 require_once(TEMPLATE_DASHBOARD);
 

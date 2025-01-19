@@ -17,9 +17,6 @@ class Bank extends Database
     {
       parent::__construct($args);
 
-      if (array_key_exists('id', $args)) {
-          $this->id = $args['id'];
-      }
       if (array_key_exists('uid', $args)) {
           $this->uid = $args['uid'];
       }
