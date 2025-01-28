@@ -10,6 +10,7 @@ global $session;
 
 class Router {
     private static array $routes = [];
+    private static array $apiRoutes = [];
     private static array $protectedDirs = [ 
       array(
         'dir'   => '/dashboard/', 
@@ -130,29 +131,35 @@ class Router {
     }
 
     public static function dispatchAPI($uri, $method) {
+      global $session;
+
       // MUST be logged-in for API calls
       if(!$session->is_logged_in()) {
+        header('Content-Type: application/json');
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
         return false;
       }
 
+      // Removes '/api'
       $uri = substr($uri, 4);
 
       // Check routes
-      $routes = self::$routes[$method] ?? [];
-      foreach ($routes as $path => $callback) {
+      $apiRoutes = self::$apiRoutes[$method] ?? [];
+      foreach ($apiRoutes as $path => $callback) {
         // Exact match to routes def
         $pattern = self::convertPathToRegex($path);
         if (preg_match($pattern, $uri, $matches)) {
+          header('Content-Type: application/json');
           $params = self::extractParams($matches);
-          $callback($params);
-          return true;
-        }
+          $result = $callback($params);
 
-        // Some routes can be a PHP file
-        $pattern = self::convertPathToRegex($path . '.php');
-        if (preg_match($pattern, $uri, $matches)) {
-          $params = self::extractParams($matches);
-          $callback($params);
+          // If result is not already encoded JSON, encode it
+          if (!is_string($result) || !is_array(json_decode($result, true))) {
+            $result = json_encode($result);
+          }
+
+          echo $result;
           return true;
         }
       }

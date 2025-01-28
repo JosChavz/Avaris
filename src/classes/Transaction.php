@@ -26,8 +26,7 @@ class Transaction extends Database
           $this->uid = $args['uid'];
       }
       if (isset($args['bid']) && !empty($args['bid'])) {
-        var_dump($args['bid']);
-          $this->set_bank_id((int)$args['bid']);
+        $this->set_bank_id((int)$args['bid']);
       }
       if (isset($args['name'])) {
           $this->set_name($args['name']);
@@ -128,22 +127,10 @@ class Transaction extends Database
         return array_shift($row);
     }
 
-    public static function select_from_date(int $bank_id, int $month, int $year, array $args=[]) : array {
-        $sql = "SELECT * FROM transactions WHERE bid = " . self::$database->escape_string($bank_id) .
-            " AND MONTH(created_at) = " . self::$database->escape_string($month) . " AND YEAR(created_at) = " .
-            self::$database->escape_string($year) . " ORDER BY created_at DESC";
-
-        if (isset($args['limit'])) {
-            $sql .= " LIMIT " . self::$database->escape_string($args['limit']);
-        }
-        if (isset($args['offset'])) {
-            $sql .= " OFFSET " . self::$database->escape_string($args['offset']);
-        }
-        return self::find_by_sql($sql);
-    }
-
     /***
-     * User summation of expenses
+     * User summation of expenses of type EXPENSE
+     * If no $cats is present, will return all categories
+     * Will skip any types that does not exist with no warning.
      * @param int   $user_id  User ID
      * @param array $cats     Category from ExpenseType enum
      * @param array $args     Extra arguments with the schema: 
@@ -154,7 +141,20 @@ class Transaction extends Database
      *                        ] 
      ***/
     public static function select_summation(int $user_id, array $cats=[], array $args=[]) : float {
-      $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND type='EXPENSE'"; 
+      if (empty($cats)) return self::select_all_summation($user_id, $args);
+
+      $sum = 0;
+
+      $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id;
+
+      $sql .= " AND CATEGORY IN (";
+      foreach ($cats as $cat) {
+        $str_cat = ExpenseType::tryFrom($cat);
+        if (is_null($str_cat)) continue;
+        $sql .= self::$database->escape_string(strtoupper($str_cat));
+      }
+      $sql .= ")";
+
       if (isset($args['bank_id'])) {
           $sql .= " AND bid=" . self::$database->escape_string($args['bank_id']);
       }
@@ -172,6 +172,38 @@ class Transaction extends Database
 
       return array_shift($row) ?? 0;
     }
+    /***
+     * User summation of expenses of type EXPENSE
+     * ONLY USED PRIVATELY
+     * @param int   $user_id  User ID
+     * @param array $args     Extra arguments with the schema: 
+     *                        [
+     *                          bank_id : int
+     *                          year    : int
+     *                          month   : int
+     *                        ] 
+     ***/
+    private static function select_all_summation(int $user_id, array $args) : float {
+       $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND type='EXPENSE'";
+      if (isset($args['bank_id'])) {
+          $sql .= " AND bid=" . self::$database->escape_string($args['bank_id']);
+      }
+      if (isset($args['year'])) {
+          $sql .= " AND YEAR(created_at) = " . self::$database->escape_string($args['year']);
+      }
+      if (isset($args['month'])) {
+          $sql .= " AND MONTH(created_at) = " . self::$database->escape_string($args['month']);
+      }
+
+      $sql .= ";";
+      $result = self::$database->query($sql);
+      $row = $result->fetch_assoc();
+      $result->free();
+
+      return array_shift($row) ?? 0;
+
+    }
+
 
     public static function select_summation2(int $user_id, string $type, array $args=[]) : string {
         $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND type='" . self::$database->escape_string($type) . "'";
@@ -219,6 +251,40 @@ class Transaction extends Database
         }
 
         return $type_summations;
+    }
+
+
+    /***
+     * Selects all transactions from bank with extra arguments
+     * @param int   $user_id User's ID
+     * @param int   $bank_id Bank ID to select from
+     * @param array $args    Extra arguments:
+     *                       [
+     *                          year   : int
+     *                          month  : int
+     *                          limit  : int
+     *                          offset : int
+     *                       ]
+     ***/
+    public static function select_from_bank(int $user_id, int $bank_id, array $args=[]) {
+       $sql = "SELECT * FROM transactions WHERE bid = " . self::$database->escape_string($bank_id) .
+            " AND uid=" . $user_id;
+
+        if (isset($args['month'])) {
+            $sql .= " AND MONTH(created_at)=" . self::$database->escape_string($args['month']);
+        }
+        if (isset($args['year'])) {
+            $sql .= " AND YEAR(created_at)=" . self::$database->escape_string($args['year']);
+        }
+        if (isset($args['limit'])) {
+            $sql .= " LIMIT " . self::$database->escape_string($args['limit']);
+        }
+        if (isset($args['offset'])) {
+            $sql .= " OFFSET " . self::$database->escape_string($args['offset']);
+        }
+
+        $sql .= " ORDER BY created_at DESC";
+        return self::find_by_sql($sql);
     }
 
 }

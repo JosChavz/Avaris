@@ -22,7 +22,7 @@ $message = $session->get_message();
   <script src='/js/darkmode.min.js' defer></script>
   <script src='/js/flowbite.min.js' defer></script>
   <script src='/js/sidebar.min.js' defer></script>
-  <script src='/js/charts.min.js' defer></script>
+  <script type='module' src='/js/charts.min.js' defer></script>
   <?php 
     foreach ($extra_deps ?? [] as $dep) {
       echo $dep;
