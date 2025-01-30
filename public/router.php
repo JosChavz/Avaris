@@ -10,6 +10,7 @@ global $session;
 
 class Router {
     private static array $routes = [];
+    private static array $apiRoutes = [];
     private static array $protectedDirs = [ 
       array(
         'dir'   => '/dashboard/', 
@@ -18,7 +19,11 @@ class Router {
       array(
         'dir'   => '/admin/',
         'roles' => UserRoles::ADMIN
-      ) 
+      ),
+      array(
+        'dir'   => '/api/',
+        'roles' => [UserRoles::ADMIN, UserRoles::USER]
+      ), 
     ];
 
     public static function get(string $path, callable $callback) {
@@ -27,6 +32,10 @@ class Router {
 
     public static function post(string $path, callable $callback) {
         self::$routes['POST'][$path] = $callback;
+    }
+
+    public static function apiGet($path, $callback) {
+      self::$apiRoutes['GET'][$path] = $callback;
     }
 
     public static function dispatch(string $uri, string $method = 'GET') {
@@ -121,6 +130,54 @@ class Router {
         return false;
     }
 
+    public static function dispatchAPI($uri, $method) {
+      global $session;
+
+      // MUST be logged-in for API calls
+      if(!$session->is_logged_in()) {
+        header('Content-Type: application/json');
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
+        return false;
+      }
+
+      // Removes '/api'
+      $uri = substr($uri, 4);
+
+      // Parse query string parameters
+      $parsedUrl = parse_url($uri);
+      $path = $parsedUrl['path'];
+
+      // Get query parameters if they exist
+      $queryParams = [];
+      if (isset($parsedUrl['query'])) {
+        parse_str($parsedUrl['query'], $queryParams);
+      }
+
+      // Check routes
+      $apiRoutes = self::$apiRoutes[$method] ?? [];
+      foreach ($apiRoutes as $routePath => $callback) {
+        // Exact match to routes def
+        $pattern = self::convertPathToRegex($routePath);
+        if (preg_match($pattern, $path, $matches)) {
+          header('Content-Type: application/json');
+          $params = self::extractParams($matches);
+          $params = array_merge($params, array("query" => $queryParams));
+          $result = $callback($params);
+
+          // If result is not already encoded JSON, encode it
+          if (!is_string($result) || !is_array(json_decode($result, true))) {
+            $result = json_encode($result);
+          }
+
+          echo $result;
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     private static function convertPathToRegex(string $path): string {
       // First escape any special regex characters in the path
       $path = preg_quote($path, '/');
@@ -144,15 +201,26 @@ class Router {
 
 // Load routes
 require_once ROOT . '/src/routes.php';
+require_once ROOT . '/src/apiRoutes.php';
 
 // Dispatch the request
-if (!Router::dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])) {
-    // If no route matched and it's not a file, show 404
-    if (!file_exists(__DIR__ . $_SERVER['REQUEST_URI'])) {
-      http_response_code(404);
-      h("/404.php");
-      die();
-    }
+if (strpos($_SERVER['REQUEST_URI'], '/api') === 0) {
+  // Handle API routes
+  if (!Router::dispatchAPI($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])) {
+    // If no API route matched, return 404 JSON response
+    http_response_code(404);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'API endpoint not found']);
+    die();
+  }
+} else {
+  if (!Router::dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])) {
+      // If no route matched and it's not a file, show 404
+      if (!file_exists(__DIR__ . $_SERVER['REQUEST_URI'])) {
+        http_response_code(404);
+        h("/404.php");
+        die();
+      }
+  }
 }
-
 ?>

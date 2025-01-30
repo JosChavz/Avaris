@@ -9,7 +9,8 @@ export default defineConfig({
         charts: resolve(__dirname, 'src/js/charts.js'),
         flowbite: resolve(__dirname, 'src/js/flowbite.js'),
         sidebar: resolve(__dirname, 'src/js/sidebar.js'),
-        darkmode: resolve(__dirname, 'src/js/darkmode.js')
+        darkmode: resolve(__dirname, 'src/js/darkmode.js'),
+        bankgraph: resolve(__dirname, 'src/js/bankgraph.js')
       },
       output: {
         entryFileNames: 'js/[name].min.js',

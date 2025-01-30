@@ -2,6 +2,7 @@
 
 use enums\UserRoles;
 use classes\Transaction;
+use classes\Bank;
 
 function user_redirect_dashboard() {
   global $session;
@@ -13,16 +14,23 @@ function user_redirect_dashboard() {
   }
 }
 
-function is_users_object($obj_id) : Transaction {
+function is_users_transaction($obj_id) : Transaction {
   global $session;
-
-  // Redirect to dashboard
-  if (!$session->is_logged_in()) {
-    h("/login");
-    die(); 
-  }
   
   $res = Transaction::find_by_id_auth($obj_id, $session->get_user_id());
+  if ($res == null) {
+    $session->add_error("Sorry but that ID does not exist!");
+    h("/dashboard/");
+    die();
+  }
+
+  return $res;
+}
+
+function is_users_bank($obj_id) : Bank {
+  global $session;
+  
+  $res = Bank::find_by_id_auth($obj_id, $session->get_user_id());
   if ($res == null) {
     $session->add_error("Sorry but that ID does not exist!");
     h("/dashboard/");
@@ -58,34 +66,62 @@ Router::get('/dashboard/transactions/view', function($params) {
 });
 
 Router::get('/dashboard/transactions/view/:id', function($params) {
-  $transaction = is_users_object($params['id']);
+  $transaction = is_users_transaction($params['id']);
   extract(['transaction' => $transaction]);
   require_once ROOT . '/public/dashboard/transactions/view.php';
 });
 
 Router::get('/dashboard/transactions/edit/:id', function($params) {
-  $transaction = is_users_object($params['id']);
+  $transaction = is_users_transaction($params['id']);
   extract(['transaction' => $transaction]);
   require_once ROOT . '/public/dashboard/transactions/edit.php';
 });
 
 Router::post('/dashboard/transactions/edit/:id', function($params) {
-  $transaction = is_users_object($params['id']);
+  $transaction = is_users_transaction($params['id']);
   extract(['transaction' => $transaction]);
   require_once ROOT . '/public/dashboard/transactions/edit.php';
 });
 
 Router::get('/dashboard/transactions/delete/:id', function($params) {
-  $transaction = is_users_object($params['id']);
+  $transaction = is_users_transaction($params['id']);
   extract(['transaction' => $transaction]);
   require_once ROOT . '/public/dashboard/transactions/delete.php';
 });
 
 Router::post('/dashboard/transactions/delete/:id', function($params) {
-  $transaction = is_users_object($params['id']);
+  $transaction = is_users_transaction($params['id']);
   extract(['transaction' => $transaction]);
   require_once ROOT . '/public/dashboard/transactions/delete.php';
 });
-// Add more routes as needed
-//
+
+Router::get('/dashboard/banks/view/:id', function($params) {
+  $bank = is_users_bank($params['id']);
+  extract(['bank' => $bank]);
+  require_once ROOT . '/public/dashboard/banks/view.php';
+});
+
+Router::get('/dashboard/banks/edit/:id', function($params) {
+  $bank = is_users_bank($params['id']);
+  extract(['bank' => $bank]);
+  require_once ROOT . '/public/dashboard/banks/edit.php';
+});
+
+Router::post('/dashboard/banks/edit/:id', function($params) {
+  $bank = is_users_bank($params['id']);
+  extract(['bank' => $bank]);
+  require_once ROOT . '/public/dashboard/banks/edit.php';
+});
+
+Router::get('/dashboard/banks/delete/:id', function($params) {
+  $bank = is_users_bank($params['id']);
+  extract(['bank' => $bank]);
+  require_once ROOT . '/public/dashboard/banks/delete.php';
+});
+
+Router::post('/dashboard/banks/delete/:id', function($params) {
+  $bank = is_users_bank($params['id']);
+  extract(['bank' => $bank]);
+  require_once ROOT . '/public/dashboard/banks/delete.php';
+});
 ?>

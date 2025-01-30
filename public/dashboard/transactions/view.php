@@ -2,8 +2,13 @@
 
 use enums\TransactionType;
 use partials\BreadcrumbPartial;
+use classes\Bank;
 
 global $session;
+
+if ($transaction->bid) {
+  $bank = Bank::find_by_id_auth($transaction->bid, $session->get_user_id());
+}
 
 $title = "Transaction | View";
 $extra_deps = [
@@ -46,7 +51,7 @@ ob_start();
 
     <div class="flex justify-between items-center">
       <span class="text-sm font-bold">PAYMENT METHOD:</span>
-      <span><?php echo $transaction->bid ?? 'Cash' ?></span>
+      <span><?php echo $bank->name ?? 'Cash' ?></span>
     </div>
 
     <p class="text-sm mt-10 mb-10"><span class="italic text-sm">Notes:</span><br><?php echo html($transaction->description) ?></p>
