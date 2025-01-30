@@ -1,7 +1,7 @@
 import ApexCharts from 'apexcharts';
 
 (async function() {
-  const getChartOptions = (arr={}) => {
+  const getChartOptions = (arr={"": 0}) => {
     const format = (v) => {
       const formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -88,19 +88,19 @@ import ApexCharts from 'apexcharts';
     // Render a basic view
     const chart = new ApexCharts(document.getElementById("donut-chart"), getChartOptions());
     chart.render();
-    // Gets the split prices from an API
-    let summations = {};
-
     try {
+      // Gets the split prices from an API
       const id = new URL(document.URL).pathname.split('/').slice(-1)[0];
       const res = await fetch("/api/transactions/sum/" + id);
       const j = await res.json();
-      summations = j['transactions'];
+      console.log(j['transactions']);
+
+      if (Object.keys(j['transactions']).length > 0) {
+        // Update with new data
+        chart.updateOptions(getChartOptions(j['transactions']));
+      }
     } catch(e) {
       console.error("Something went wrong. Defaulting to empty.", err); 
     }
-
-    // Update with new data
-    chart.updateOptions(getChartOptions(summations));
   }
 })()
