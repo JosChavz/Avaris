@@ -204,30 +204,26 @@ class Transaction extends Database
 
     }
 
-
-    public static function select_summation2(int $user_id, string $type, array $args=[]) : string {
-        $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND type='" . self::$database->escape_string($type) . "'";
-        if (isset($args['bank_id'])) {
-            $sql .= " AND bid=" . self::$database->escape_string($args['bank_id']);
-        }
-        if (isset($args['year'])) {
-            $sql .= " AND YEAR(created_at) = " . self::$database->escape_string($args['year']);
-        }
-        if (isset($args['month'])) {
-            $sql .= " AND MONTH(created_at) = " . self::$database->escape_string($args['month']);
-        }
-
-        $result = self::$database->query($sql);
-        $row = $result->fetch_assoc();
-        $result->free();
-        return array_shift($row) ?? 0;
-    }
-
+    /***
+     * Selects the summation of expenses organized to the category that caller chose
+     * If no categories are present, then all categories will be used
+     * @param int   $user_id User's ID
+     * @param array $cats    Categories as ExpenseType
+     * @param array $args    Extra arguments : [
+     *                        bank_id : int
+     *                        month   : int
+     *                        year    : int
+     *                       ]
+     ***/
     public static function select_all_type_summation(int $user_id, array $cats=[], array $args=[]) : array {
         $type_summations = array();
 
+        if (empty($cats)) {
+          $cats = ExpenseType::cases();
+        }
+
         foreach ($cats as $cat) {
-            $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND category='" . self::$database->escape_string($cat) . "'";
+            $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND category='" . self::$database->escape_string(strtoupper($cat->value)) . "'";
 
             if (isset($args['bank_id'])) {
                 $sql .= " AND bid=" . self::$database->escape_string($args['bank_id']);
@@ -246,7 +242,7 @@ class Transaction extends Database
 
             // Only add it if exists
             if (isset($curr_sum)) {
-                $type_summations[$cat] = $curr_sum;
+                $type_summations[$cat->value] = number_format($curr_sum, 2, ".", "");
             }
         }
 
@@ -256,6 +252,7 @@ class Transaction extends Database
 
     /***
      * Selects all transactions from bank with extra arguments
+     * Mainly used for pagination
      * @param int   $user_id User's ID
      * @param int   $bank_id Bank ID to select from
      * @param array $args    Extra arguments:

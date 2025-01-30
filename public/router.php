@@ -144,14 +144,25 @@ class Router {
       // Removes '/api'
       $uri = substr($uri, 4);
 
+      // Parse query string parameters
+      $parsedUrl = parse_url($uri);
+      $path = $parsedUrl['path'];
+
+      // Get query parameters if they exist
+      $queryParams = [];
+      if (isset($parsedUrl['query'])) {
+        parse_str($parsedUrl['query'], $queryParams);
+      }
+
       // Check routes
       $apiRoutes = self::$apiRoutes[$method] ?? [];
-      foreach ($apiRoutes as $path => $callback) {
+      foreach ($apiRoutes as $routePath => $callback) {
         // Exact match to routes def
-        $pattern = self::convertPathToRegex($path);
-        if (preg_match($pattern, $uri, $matches)) {
+        $pattern = self::convertPathToRegex($routePath);
+        if (preg_match($pattern, $path, $matches)) {
           header('Content-Type: application/json');
           $params = self::extractParams($matches);
+          $params = array_merge($params, array("query" => $queryParams));
           $result = $callback($params);
 
           // If result is not already encoded JSON, encode it

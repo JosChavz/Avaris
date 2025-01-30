@@ -1,13 +1,18 @@
 import ApexCharts from 'apexcharts';
 
 (async function() {
-  // Gets the split prices from an API
-  const a = await fetch("/api/banks");
-  const b = await a.json();
-  console.log(b);
-  const getChartOptions = () => {
+  const getChartOptions = (arr={}) => {
+    const format = (v) => {
+      const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        trailingZeroDisplay: 'stripIfInteger',
+      });
+      return formatter.format(v);
+    };
+
     return {
-      series: [35.1, 23.5, 2.4, 5.4],
+      series: Object.values(arr).map(s => parseFloat(s)),
       colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694"],
       chart: {
         height: 320,
@@ -31,22 +36,18 @@ import ApexCharts from 'apexcharts';
                 total: {
                   showAlways: true,
                   show: true,
-                  label: "Unique visitors",
+                  label: "Expenses",
                   fontFamily: "Inter, sans-serif",
-                  formatter: function (w) {
-                    const sum = w.globals.seriesTotals.reduce((a, b) => {
-                      return a + b
-                    }, 0)
-                    return '$' + sum + 'k'
-                  },
+                  formatter: (v) => {
+                    const sum = v.globals.seriesTotals.reduce((partial, a) => partial + a, 0);
+                    return format(sum);
+                  }
                 },
                 value: {
                   show: true,
                   fontFamily: "Inter, sans-serif",
                   offsetY: -20,
-                  formatter: function (value) {
-                    return value + "k"
-                  },
+                  formatter: (v) => format(v),
                 },
               },
               size: "80%",
@@ -58,7 +59,7 @@ import ApexCharts from 'apexcharts';
           top: -2,
         },
       },
-      labels: ["Direct", "Sponsor", "Affiliate", "Email marketing"],
+      labels: Object.keys(arr),
       dataLabels: {
         enabled: false,
       },
@@ -68,16 +69,10 @@ import ApexCharts from 'apexcharts';
       },
       yaxis: {
         labels: {
-          formatter: function (value) {
-            return value + "k"
-          },
         },
       },
       xaxis: {
         labels: {
-          formatter: function (value) {
-            return value  + "k"
-          },
         },
         axisTicks: {
           show: false,
@@ -90,7 +85,22 @@ import ApexCharts from 'apexcharts';
   }
 
   if (document.getElementById("donut-chart") && typeof ApexCharts !== 'undefined') {
+    // Render a basic view
     const chart = new ApexCharts(document.getElementById("donut-chart"), getChartOptions());
     chart.render();
+    // Gets the split prices from an API
+    let summations = {};
+
+    try {
+      const id = new URL(document.URL).pathname.split('/').slice(-1)[0];
+      const res = await fetch("/api/transactions/sum/" + id);
+      const j = await res.json();
+      summations = j['transactions'];
+    } catch(e) {
+      console.error("Something went wrong. Defaulting to empty.", err); 
+    }
+
+    // Update with new data
+    chart.updateOptions(getChartOptions(summations));
   }
 })()
