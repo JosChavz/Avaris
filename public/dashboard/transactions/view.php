@@ -44,7 +44,7 @@ ob_start();
       <div class="flex gap-2 items-center">
         <?php echo $transaction->type->icon() ?>
         <span class="font-bold">
-          $<?php echo $transaction->amount ?> 
+          $<?php echo number_format($transaction->amount, 2) ?> 
         </span>
       </div>
     </div>

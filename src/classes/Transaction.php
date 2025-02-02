@@ -89,7 +89,7 @@ class Transaction extends Database
       $name = trim($name);
       $temp_errors = array();
 
-      $pattern = "#^[a-zA-Z '\"/.]{2,40}$#";
+      $pattern = "#[a-zA-Z \'\"/.]{2,40}#";
 
       if (empty($name)) {
           $temp_errors[] = "Expense name cannot be empty";

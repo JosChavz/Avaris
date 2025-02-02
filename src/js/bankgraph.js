@@ -89,9 +89,17 @@ import ApexCharts from 'apexcharts';
     const chart = new ApexCharts(document.getElementById("donut-chart"), getChartOptions());
     chart.render();
     try {
+      const today = new Date();
+      const queryParams = new URLSearchParams({
+        month: today.getMonth(),
+        year: today.getYear(),
+      });
+      const queryString = queryParams.toString();
       // Gets the split prices from an API
       const id = new URL(document.URL).pathname.split('/').slice(-1)[0];
-      const res = await fetch("/api/transactions/sum/" + id);
+      // Make the fetch
+      const link = `/api/transactions/sum/${id}?${extraQueries}`;
+      const res = await fetch(link);
       const j = await res.json();
       console.log(j['transactions']);
 
