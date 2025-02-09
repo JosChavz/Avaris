@@ -66,7 +66,10 @@ ob_start();
               </tr>
             </thead>
             <tbody class="bg-white dark:bg-gray-800">
-            <?php 
+          <?php 
+            foreach ($budgets as $budget) {
+              echo BudgetRowPartial::render_row($budget, 0);
+          }
             ?>              
             </tbody>
           </table>
