@@ -9,7 +9,7 @@ use enums\TransactionType;
 class Transaction extends Database
 {
     protected static string $table_name = "transactions";
-    protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category'];
+    protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category', 'budget_id'];
     public int $uid;
     public int|null $bid;
     public string $name;
@@ -27,6 +27,9 @@ class Transaction extends Database
       }
       if (isset($args['bid']) && !empty($args['bid'])) {
         $this->set_bank_id((int)$args['bid']);
+      }
+      if (isset($args['budget_id']) && !empty($args['budget_id'])) {
+        $this->budget_id = (int)$args['budget_id'];
       }
       if (isset($args['name'])) {
           $this->set_name($args['name']);
@@ -282,6 +285,35 @@ class Transaction extends Database
 
         $sql .= " ORDER BY created_at DESC";
         return self::find_by_sql($sql);
+    }
+
+    /***
+     * Gets all transaction with the budget ID.
+     * Note: Every transaction has one or no budget_id attributed to it
+     * @param int $user_id    User ID
+     * @param int $budget_id  Budget ID
+     * @param array $args     Extra arguments with the following schema: [
+     *                          limit : int
+     *                          offset : int
+     *                        ]
+     *
+     * @return Transaction | null Returns the transaction object if it exists
+     ***/
+    public static function select_from_budget_auth(int $user_id, int $budget_id, array $args=[]) : array | null {
+      $sql = "SELECT * FROM transactions WHERE uid=" . self::$database->escape_string($user_id) .
+        " AND budget_id=" . $budget_id; 
+
+      if (isset($args['limit'])) {
+          $sql .= " LIMIT " . self::$database->escape_string($args['limit']);
+      }
+      if (isset($args['offset'])) {
+          $sql .= " OFFSET " . self::$database->escape_string($args['offset']);
+      }
+
+      $sql .= " ORDER BY created_at DESC;";
+      var_dump($sql);
+
+      return self::find_by_sql($sql);
     }
 
 }
