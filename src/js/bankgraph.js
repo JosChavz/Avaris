@@ -89,18 +89,27 @@ import ApexCharts from 'apexcharts';
     const chart = new ApexCharts(document.getElementById("donut-chart"), getChartOptions());
     chart.render();
     try {
+      const today = new Date();
+      const queryParams = new URLSearchParams({
+        month: today.getMonth() + 1,
+        year: today.getFullYear(),
+      });
+      const queryString = queryParams.toString();
       // Gets the split prices from an API
       const id = new URL(document.URL).pathname.split('/').slice(-1)[0];
-      const res = await fetch("/api/transactions/sum/" + id);
+      // Make the fetch
+      console.log(queryString);
+      const link = `/api/transactions/sum/${id}?${queryString}`;
+      const res = await fetch(link);
       const j = await res.json();
-      console.log(j['transactions']);
+      console.log(j);
 
       if (Object.keys(j['transactions']).length > 0) {
         // Update with new data
         chart.updateOptions(getChartOptions(j['transactions']));
       }
     } catch(e) {
-      console.error("Something went wrong. Defaulting to empty.", err); 
+      console.error("Something went wrong. Defaulting to empty.", e); 
     }
   }
 })()

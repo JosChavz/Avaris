@@ -14,7 +14,8 @@ ob_start();
 <div class="mb-14">
   <h1 class="mb-2 text-4xl font-bold text-gray-900 dark:text-white">Banks</h1>
 </div>
-<!-- Transaction Table  -->
+
+<!-- Bank Table  -->
 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
   <!-- Card header -->
   <div class="items-center justify-between lg:flex">

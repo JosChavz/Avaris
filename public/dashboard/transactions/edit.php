@@ -6,9 +6,16 @@ use partials\TransactionFormPartial;
 use partials\BreadcrumbPartial;
 use classes\Transaction;
 use classes\Bank; 
+use classes\Budget;
 
 $title = "Transaction | Edit";
 $banks = Bank::find_by_user_id($session->get_user_id());
+$budgets = Budget::find_budgets($session->get_user_id());
+
+# Always show the current budget, even if it's an archived one
+if ($transaction->budget_id) {
+  $budgets[] = Budget::find_by_id_auth($transaction->budget_id, $session->get_user_id());
+}
 
 if (is_post_request()) {
   $args = $_POST['transaction'];
@@ -46,7 +53,7 @@ ob_start();
 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
   <section>
   <?php
-    echo TransactionFormPartial::render_create_form($transaction, $transaction->type, $banks, false);
+    echo TransactionFormPartial::render_create_form($transaction, $transaction->type, $banks, $budgets, false);
   ?>
   </section>
 </div>

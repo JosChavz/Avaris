@@ -3,6 +3,7 @@
 use enums\UserRoles;
 use classes\Transaction;
 use classes\Bank;
+use classes\Budget;
 
 function user_redirect_dashboard() {
   global $session;
@@ -31,6 +32,19 @@ function is_users_bank($obj_id) : Bank {
   global $session;
   
   $res = Bank::find_by_id_auth($obj_id, $session->get_user_id());
+  if ($res == null) {
+    $session->add_error("Sorry but that ID does not exist!");
+    h("/dashboard/");
+    die();
+  }
+
+  return $res;
+}
+
+function is_users_budget($obj_id) : Budget {
+  global $session;
+  
+  $res = Budget::find_by_id_auth($obj_id, $session->get_user_id());
   if ($res == null) {
     $session->add_error("Sorry but that ID does not exist!");
     h("/dashboard/");
@@ -124,4 +138,23 @@ Router::post('/dashboard/banks/delete/:id', function($params) {
   extract(['bank' => $bank]);
   require_once ROOT . '/public/dashboard/banks/delete.php';
 });
+
+Router::get('/dashboard/budgets/view/:id', function($params) {
+  $budget = is_users_budget($params['id']);
+  extract(['budget' => $budget]);
+  require_once ROOT . '/public/dashboard/budgets/view.php';
+});
+
+Router::get('/dashboard/budgets/delete/:id', function($params) {
+  $budget = is_users_budget($params['id']);
+  extract(['budget' => $budget]);
+  require_once ROOT . '/public/dashboard/budgets/delete.php';
+});
+
+Router::post('/dashboard/budgets/delete/:id', function($params) {
+  $budget = is_users_budget($params['id']);
+  extract(['budget' => $budget]);
+  require_once ROOT . '/public/dashboard/budgets/delete.php';
+});
+
 ?>

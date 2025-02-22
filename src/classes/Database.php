@@ -239,9 +239,6 @@ use enums\UserRoles;
         return true;
     }
 
-    // TODO : Figure out how to dynamically assign enums
-    //      Might need to define child function for classes that uses enums
-    //      This will be a generic function
     static protected function instantiate($row): Database
     {
         $object = new static([]);

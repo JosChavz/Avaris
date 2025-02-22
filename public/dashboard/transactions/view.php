@@ -3,11 +3,16 @@
 use enums\TransactionType;
 use partials\BreadcrumbPartial;
 use classes\Bank;
+use classes\Budget;
 
 global $session;
 
 if ($transaction->bid) {
   $bank = Bank::find_by_id_auth($transaction->bid, $session->get_user_id());
+}
+
+if ($transaction->budget_id) {
+  $budget = Budget::find_by_id_auth($transaction->budget_id, $session->get_user_id());
 }
 
 $title = "Transaction | View";
@@ -29,7 +34,7 @@ ob_start();
   <h1 class="text-2xl font-bold text-gray-900 dark:text-white">View Transaction</h1>
 </div>
 
-<article class="relative p-4 max-w-screen-sm m-auto bg-white rounded-lg !rounded-b-none shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+<article class="relative dark:text-white p-4 max-w-screen-sm m-auto bg-white rounded-lg !rounded-b-none shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
     <div class="flex gap-4 mb-4">
       <span class="text-sm text-slate-600 dark:text-slate-400"><?php echo (new \DateTimeImmutable($transaction->created_at))->format('M d Y H:s') ?></span>
     </div>
@@ -44,14 +49,19 @@ ob_start();
       <div class="flex gap-2 items-center">
         <?php echo $transaction->type->icon() ?>
         <span class="font-bold">
-          $<?php echo $transaction->amount ?> 
+          $<?php echo number_format($transaction->amount, 2) ?> 
         </span>
       </div>
     </div>
 
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center my-4">
       <span class="text-sm font-bold">PAYMENT METHOD:</span>
       <span><?php echo $bank->name ?? 'Cash' ?></span>
+    </div>
+
+    <div class="flex justify-between items-center">
+      <span class="text-sm font-bold">BUDGET:</span>
+      <span><?php echo $budget->name ?? 'None' ?></span>
     </div>
 
     <p class="text-sm mt-10 mb-10"><span class="italic text-sm">Notes:</span><br><?php echo html($transaction->description) ?></p>

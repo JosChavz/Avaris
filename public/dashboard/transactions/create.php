@@ -7,12 +7,14 @@ ob_start();
 
 use classes\Transaction;
 use classes\Bank;
+use classes\Budget;
 use enums\TransactionType;
 use partials\TransactionFormPartial;
 use partials\BreadcrumbPartial;
 
 $transaction = new Transaction();
 $banks = Bank::find_by_user_id($session->get_user_id());
+$budgets = Budget::find_budgets($session->get_user_id());
 
 if (is_post_request()) {
   $args = $_POST['transaction'];
@@ -46,7 +48,7 @@ if (is_post_request()) {
 </div>
 
 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-  <section class="bg-white dark:bg-gray-900">
+  <section>
     <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
             <li class="me-2" role="presentation">
@@ -67,12 +69,12 @@ if (is_post_request()) {
     <div id="default-tab-content">
         <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="profile" role="tabpanel" aria-labelledby="profile-tab">
         <?php
-          echo TransactionFormPartial::render_create_form($transaction, TransactionType::EXPENSE, $banks);
+          echo TransactionFormPartial::render_create_form($transaction, TransactionType::EXPENSE, $banks, $budgets);
         ?>
         </div>
         <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
         <?php
-          echo TransactionFormPartial::render_create_form($transaction, TransactionType::INCOME, $banks);
+          echo TransactionFormPartial::render_create_form($transaction, TransactionType::INCOME, $banks, []);
         ?>
         </div>
     </div>

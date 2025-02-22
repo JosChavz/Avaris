@@ -10,18 +10,19 @@ class TransactionFormPartial {
 
   /***
    * Only to be used in the `create.php` page
-   * @param mixed[]         $args   Array with all properties to create a `Transaction` object
-   *                                and will be used to prefill any fields if data exists and 
-   *                                is valid
-   * @param TransactionType $type   The type of transaction to which will determine which
-   *                                form to use
-   * @param Banks[]         $banks  Array of user banks for options
-   * @param boolean         $create Will point to the `./create.php` page if it's meant to create;
-   *                                Otherwise, send to the `./edit.php` page
+   * @param mixed[]         $args     Array with all properties to create a `Transaction` object
+   *                                  and will be used to prefill any fields if data exists and 
+   *                                  is valid
+   * @param TransactionType $type     The type of transaction to which will determine which
+   *                                  form to use
+   * @param Bank[]          $banks    Array of user banks for options
+   * @param Budget[]        $budgets  Array of user budgets that are still open
+   * @param boolean         $create   Will point to the `./create.php` page if it's meant to create;
+   *                                  Otherwise, send to the `./edit.php` page
    * @return string Template that was requested to render for CREATE/UPDATE actions with
    *                any prefilled data if `$args` is present
    ***/
-  public static function render_create_form(Transaction $transaction, TransactionType $type, array $banks, bool $create=true) : string {
+  public static function render_create_form(Transaction $transaction, TransactionType $type, array $banks, array $budgets, bool $create=true) : string {
     ob_start();
     $action_url = '/dashboard/transactions/' . (($create) ? 'create' : 'edit/' . $transaction->id);
   ?>
@@ -62,15 +63,17 @@ class TransactionFormPartial {
               class="bg-gray-50 border border-gray-300 text-gray-900 capitalize text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
             <?php foreach (ExpenseType::cases() as $t) : ?>
               <option 
-                <?php echo (($transaction->category === $t)) ? 'selected' : null; ?>
+                <?php echo ((isset($transaction->category) && $transaction->category === $t)) ? 'selected' : null; ?>
                 value="<?php echo $t->value ?>">
                   <?php echo $t->value; ?>
               </option>
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="w-full col-span-2">
-          <label for="banks" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select bank</label>
+        
+        <!-- Bank Selection -->
+        <div>
+          <label for="banks" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bank (optional)</label>
           <select id="banks" 
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             name="transaction[bid]" >
@@ -79,6 +82,21 @@ class TransactionFormPartial {
             <option 
               <?php echo ((isset($transaction->bid) && ($transaction->bid == $bank->id)) ? "selected" : "")  ?>
               value="<?php echo $bank->id ?>"><?php echo $bank->name ?></option>
+          <?php endforeach; ?>
+          </select>
+        </div>
+
+        <!-- Budget Selection -->
+        <div>
+          <label for="banks" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Budget (optional)</label>
+          <select id="banks" 
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            name="transaction[budget_id]" >
+            <option value="">---None---</option>
+          <?php foreach($budgets as $budget) : ?>
+            <option 
+              <?php echo ((isset($transaction->budget_id) && ($transaction->budget_id == $budget->id)) ? "selected" : "")  ?>
+              value="<?php echo $budget->id ?>"><?php echo $budget->name ?></option>
           <?php endforeach; ?>
           </select>
         </div>
