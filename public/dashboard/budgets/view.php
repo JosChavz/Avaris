@@ -7,10 +7,9 @@ use classes\Budget;
 use partials\BreadcrumbPartial;
 use partials\TransactionRowPartial;
 
-$title = "Budget | View";
+$title = "Budgets | View";
 
 $budget_transactions = Transaction::select_from_budget_auth($session->get_user_id(), $budget->id);
-var_dump($budget_transactions); 
 
 ob_start();
 
@@ -20,7 +19,7 @@ ob_start();
   'name'  => 'Budget',
   'url'   => '/dashboard/budgets/',
 ], [
-  'name' => 'Create',
+  'name' => 'View',
 ])); ?>
 <div class="mb-14">
   <h1 class="mb-2 text-4xl font-bold text-gray-900 dark:text-white">Transactions</h1>

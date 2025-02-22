@@ -10,7 +10,12 @@ use classes\Budget;
 
 $title = "Transaction | Edit";
 $banks = Bank::find_by_user_id($session->get_user_id());
-$budgets = Budget::find_by_user_id($session->get_user_id());
+$budgets = Budget::find_budgets($session->get_user_id());
+
+# Always show the current budget, even if it's an archived one
+if ($transaction->budget_id) {
+  $budgets[] = Budget::find_by_id_auth($transaction->budget_id, $session->get_user_id());
+}
 
 if (is_post_request()) {
   $args = $_POST['transaction'];

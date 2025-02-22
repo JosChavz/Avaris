@@ -97,7 +97,29 @@ class Budget extends Database {
 
       $this->add_errors($temp_errors);
       return count($temp_errors) == 0;
+  }
+
+  /***
+   * Get current or archived budgets 
+   * @param int $user_id : User ID
+   * @param array $args : Extra arguments with schema as 
+   *                      [
+   *                        limit   : int
+   *                        offset  : int
+   *                      ]
+   ***/
+  public static function find_budgets(int $user_id, bool $archived=false, array $args=["limit" => 5]) : array {
+    $op = ($archived) ? '<' : '>=';
+    $sql = "SELECT * FROM budgets WHERE `to_date` " . $op . " CURRENT_DATE ORDER BY `from_date` DESC";
+
+    if (isset($args['offset'])) {
+      $sql .= " OFFSET " . $args['offset'];
     }
+
+    $sql .= " LIMIT " . self::$database->escape_string($args['limit']) . ";";
+    
+    return self::find_by_sql($sql) ?? [];
+  }
 
 }
 

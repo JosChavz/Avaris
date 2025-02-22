@@ -14,7 +14,7 @@ use partials\BreadcrumbPartial;
 
 $transaction = new Transaction();
 $banks = Bank::find_by_user_id($session->get_user_id());
-$budgets = Budget::find_by_user_id($session->get_user_id());
+$budgets = Budget::find_budgets($session->get_user_id());
 
 if (is_post_request()) {
   $args = $_POST['transaction'];

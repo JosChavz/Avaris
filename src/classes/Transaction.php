@@ -138,9 +138,10 @@ class Transaction extends Database
      * @param array $cats     Category from ExpenseType enum
      * @param array $args     Extra arguments with the schema: 
      *                        [
-     *                          bank_id : int
-     *                          year    : int
-     *                          month   : int
+     *                          bank_id   : int
+     *                          budget_id : int
+     *                          year      : int
+     *                          month     : int
      *                        ] 
      ***/
     public static function select_summation(int $user_id, array $cats=[], array $args=[]) : float {
@@ -181,15 +182,19 @@ class Transaction extends Database
      * @param int   $user_id  User ID
      * @param array $args     Extra arguments with the schema: 
      *                        [
-     *                          bank_id : int
-     *                          year    : int
-     *                          month   : int
+     *                          bank_id   : int
+     *                          budget_id : int
+     *                          year      : int
+     *                          month     : int
      *                        ] 
      ***/
     private static function select_all_summation(int $user_id, array $args) : float {
        $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND type='EXPENSE'";
       if (isset($args['bank_id'])) {
           $sql .= " AND bid=" . self::$database->escape_string($args['bank_id']);
+      }
+      if (isset($args['budget_id'])) {
+          $sql .= " AND budget_id=" . self::$database->escape_string($args['budget_id']);
       }
       if (isset($args['year'])) {
           $sql .= " AND YEAR(created_at) = " . self::$database->escape_string($args['year']);
@@ -311,7 +316,6 @@ class Transaction extends Database
       }
 
       $sql .= " ORDER BY created_at DESC;";
-      var_dump($sql);
 
       return self::find_by_sql($sql);
     }
