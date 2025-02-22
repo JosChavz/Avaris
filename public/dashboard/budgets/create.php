@@ -7,7 +7,6 @@ use partials\BreadcrumbPartial;
 use partials\BudgetFormPartial;
 
 $title = "Budget | Create";
-$extra_deps = ["<script type='module' async src='/js/budgetdate.min.js'></script>"];
 
 $budget = new Budget();
 

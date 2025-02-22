@@ -34,7 +34,7 @@ ob_start();
   <h1 class="text-2xl font-bold text-gray-900 dark:text-white">View Transaction</h1>
 </div>
 
-<article class="relative p-4 max-w-screen-sm m-auto bg-white rounded-lg !rounded-b-none shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+<article class="relative dark:text-white p-4 max-w-screen-sm m-auto bg-white rounded-lg !rounded-b-none shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
     <div class="flex gap-4 mb-4">
       <span class="text-sm text-slate-600 dark:text-slate-400"><?php echo (new \DateTimeImmutable($transaction->created_at))->format('M d Y H:s') ?></span>
     </div>
