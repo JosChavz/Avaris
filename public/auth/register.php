@@ -17,13 +17,15 @@ if (is_post_request()) {
         $session->add_error("Account exists. Please login.");
       } else if ($user->save()) {
         // Otherwise try to create an account
-        $session->login($user);
+        $session->login($user, false);
         $session->add_message("User was created.");
         h('/dashboard/index.php');
       } else {
         // If all fails, print out errors
         $session->add_errors($user->errors);
       }
+    } else {
+      $session->add_errors($user->errors);
     }
 }
 

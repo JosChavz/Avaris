@@ -32,7 +32,7 @@ use enums\UserRoles;
      * @param $sql
      * @return Database[]
      */
-    static function find_by_sql($sql): array
+    protected static function find_by_sql($sql): array
     {
         $result = self::$database->query($sql);
 

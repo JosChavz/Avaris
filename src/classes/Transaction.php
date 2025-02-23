@@ -5,11 +5,12 @@ namespace classes;
 use http\Exception\RuntimeException;
 use enums\ExpenseType;
 use enums\TransactionType;
+use classes\UserMeta;
 
 class Transaction extends Database
 {
     protected static string $table_name = "transactions";
-    protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category', 'budget_id'];
+    protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category', 'budget_id', 'monthly_budget_id'];
     public int $uid;
     public int|null $bid;
     public string $name;
@@ -18,12 +19,16 @@ class Transaction extends Database
     public TransactionType $type;
     public ExpenseType|null $category;
     public int|null $budget_id;
+    public int|null $monthly_budget_id;
 
     public function __construct(array $args = []) {
       parent::__construct($args);
 
       if (isset($args['uid'])) {
-          $this->uid = $args['uid'];
+        $this->uid = $args['uid'];
+      }
+      if (isset($args['monthly_budget_id'])) {
+        $this->monthly_budget_id = $args['monthly_budget_id'];
       }
       if (isset($args['bid']) && !empty($args['bid'])) {
         $this->set_bank_id((int)$args['bid']);
@@ -76,6 +81,8 @@ class Transaction extends Database
 
     public function save(array $requires=["uid", "name", "amount", "type"]) : bool {
       if ($this->type == TransactionType::EXPENSE) $requires[] = 'category';
+      # Only add `monthly_budget_id` if it's to create
+      if (is_null($this->id)) $requires[] = 'monthly_budget_id';
       return parent::save($requires);
     }
 
@@ -140,6 +147,7 @@ class Transaction extends Database
      *                        [
      *                          bank_id   : int
      *                          budget_id : int
+     *                          monthly_budget_id : int
      *                          year      : int
      *                          month     : int
      *                        ] 
@@ -168,6 +176,9 @@ class Transaction extends Database
       if (isset($args['month'])) {
           $sql .= " AND MONTH(created_at) = " . self::$database->escape_string($args['month']);
       }
+      if (isset($args['budget_id'])) {
+        $sql .= " AND budget_id=" . self::$database->escape_string($args['budget_id']); 
+      }
 
       $sql .= ";";
       $result = self::$database->query($sql);
@@ -184,6 +195,7 @@ class Transaction extends Database
      *                        [
      *                          bank_id   : int
      *                          budget_id : int
+     *                          monthly_budget_id : int
      *                          year      : int
      *                          month     : int
      *                        ] 
@@ -195,6 +207,9 @@ class Transaction extends Database
       }
       if (isset($args['budget_id'])) {
           $sql .= " AND budget_id=" . self::$database->escape_string($args['budget_id']);
+      }
+      if (isset($args['monthly_budget_id'])) {
+          $sql .= " AND monthly_budget_id=" . self::$database->escape_string($args['monthly_budget_id']);
       }
       if (isset($args['year'])) {
           $sql .= " AND YEAR(created_at) = " . self::$database->escape_string($args['year']);

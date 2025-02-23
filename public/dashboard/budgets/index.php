@@ -3,6 +3,7 @@
 global $session;
 
 use partials\BudgetRowPartial;
+use partials\BudgetTrakPartial;
 use classes\Budget;
 use classes\Transaction;
 
@@ -11,6 +12,9 @@ $title = "Budgets";
 $budgets = Budget::find_budgets($session->get_user_id());
 $archived_budgets = Budget::find_budgets($session->get_user_id(), true);
 
+// Logic for monthly budget
+$monthly_budget = Budget::find_by_id_auth($session->get_monthly_budget_id(), $session->get_user_id());
+$sum = Transaction::select_summation($session->get_user_id(), [], [ 'monthly_budget_id' => $monthly_budget->id ]);
 ob_start();
 ?>
 
@@ -25,7 +29,7 @@ ob_start();
   <h2 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">This Month&apos;s Progress</h2>
   <span class="text-sm font-normal text-gray-500 dark:text-gray-400">Want to change your monthly budget?</span>
 
-  <?php // echo BudgetTrakPartial::render_progress(); ?>
+  <?php echo BudgetTrakPartial::render_progress($monthly_budget, $sum); ?>
 </div>
 
 <div class="mt-8 p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
