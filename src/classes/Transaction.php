@@ -26,10 +26,9 @@ class Transaction extends Database
 
       if (isset($args['uid'])) {
         $this->uid = $args['uid'];
-
-        $res = UserMeta::find_by_user_id($this->uid);
-        $user_meta = array_shift($res);
-        $this->monthly_budget_id = $user_meta->monthly_budget_id;
+      }
+      if (isset($args['monthly_budget_id'])) {
+        $this->monthly_budget_id = $args['monthly_budget_id'];
       }
       if (isset($args['bid']) && !empty($args['bid'])) {
         $this->set_bank_id((int)$args['bid']);

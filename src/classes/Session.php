@@ -5,11 +5,12 @@ use enums\UserRoles;
 
 class Session
 {
-    private string $user_id;
+    private int $user_id;
     private string $user_name;
     private string $user_email;
+    private int $monthly_budget_id;
     private UserRoles $user_role = UserRoles::USER;
-    private int $last_login;
+    private $last_login;
     const MAX_LOGIN_AGE = 60 * 60 * 4; # 4 Hours
     private array $errors = array();
     private string $message;
@@ -39,8 +40,8 @@ class Session
               self::add_message('New budget was created!');
             }
             $user_meta->last_login = time();
-
             $user_meta->save();
+            $_SESSION['monthly_budget_id'] = $user_meta->monthly_budget_id;
         }
 
         return true;
@@ -63,6 +64,8 @@ class Session
         unset($this->user_email);
         unset($_SESSION['last_login']);
         unset($this->last_login);
+        unset($_SESSION['monthly_budget_id']);
+        unset($this->monthly_budget_id);
         return true;
     }
 
@@ -80,6 +83,9 @@ class Session
     private function check_stored_login() : void {
         if (isset($_SESSION['user_id'])) {
             $this->user_id = $_SESSION['user_id'];
+        }
+        if (isset($_SESSION['monthly_budget_id'])) {
+            $this->monthly_budget_id = $_SESSION['monthly_budget_id'];
         }
         if (isset($_SESSION['user_name'])) {
             $this->user_name = html($_SESSION['user_name']);
@@ -131,6 +137,10 @@ class Session
     public function get_user_role(): UserRoles 
     {
         return $this->user_role;
+    }
+
+    public function get_monthly_budget_id() : int {
+      return $this->monthly_budget_id;
     }
 
     public function add_error(string $err) {
