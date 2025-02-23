@@ -147,6 +147,7 @@ class Transaction extends Database
      *                        [
      *                          bank_id   : int
      *                          budget_id : int
+     *                          monthly_budget_id : int
      *                          year      : int
      *                          month     : int
      *                        ] 
@@ -175,6 +176,9 @@ class Transaction extends Database
       if (isset($args['month'])) {
           $sql .= " AND MONTH(created_at) = " . self::$database->escape_string($args['month']);
       }
+      if (isset($args['budget_id'])) {
+        $sql .= " AND budget_id=" . self::$database->escape_string($args['budget_id']); 
+      }
 
       $sql .= ";";
       $result = self::$database->query($sql);
@@ -191,6 +195,7 @@ class Transaction extends Database
      *                        [
      *                          bank_id   : int
      *                          budget_id : int
+     *                          monthly_budget_id : int
      *                          year      : int
      *                          month     : int
      *                        ] 
@@ -202,6 +207,9 @@ class Transaction extends Database
       }
       if (isset($args['budget_id'])) {
           $sql .= " AND budget_id=" . self::$database->escape_string($args['budget_id']);
+      }
+      if (isset($args['monthly_budget_id'])) {
+          $sql .= " AND monthly_budget_id=" . self::$database->escape_string($args['monthly_budget_id']);
       }
       if (isset($args['year'])) {
           $sql .= " AND YEAR(created_at) = " . self::$database->escape_string($args['year']);

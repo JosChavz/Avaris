@@ -31,6 +31,7 @@ ob_start();
   </p>
 </div>
 
+<!-- Progress Bar -->
 <div>
   <div class="flex justify-between mb-1">
     <span class="text-base font-medium text-blue-700 dark:text-white">$<?php echo number_format($sum, 2) ?></span>
