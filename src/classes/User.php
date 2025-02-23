@@ -3,6 +3,7 @@
 namespace classes;
 
 use enums\UserRoles;
+use \DateTime;
 
 class User extends Database
 {
@@ -162,8 +163,41 @@ class User extends Database
     protected function create(array $requires=[]): bool
     {
       $requires = ['name', 'email', 'hashed_password', 'role'];
+
       $this->set_hashed_password();
-      return parent::create($requires);
+      if (!parent::create($requires)) {
+        return false;
+      }
+
+      # Create a budget for the `monthly_budget_id`
+      $budget = new Budget([
+        "name" => date("F Y"),
+        "uid" => $this->id,
+        "max_amount" => 300,
+        "from_date" => date('m/01/Y'),
+        "to_date" => date('m/t/Y')
+      ]);
+
+      if (!$budget->save()) {
+        $this->add_errors(['Could not create Budget. Please contact support.']);
+        self::remove();
+        return false;
+      }
+
+      # After creating a user, create its user_meta
+      $user_meta = new UserMeta([
+        'uid' => $this->id,
+        'monthly_budget_id' => $budget->id,
+      ]);
+
+      if (!$user_meta->save()) {
+        $this->add_errors(['Could not create UserMeta. Please contact support.']);
+        $budget->remove();
+        self::remove();
+        return false;
+      }
+
+      return true;
     }
 
     protected function update(array $requires = []): bool

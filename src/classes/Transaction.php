@@ -5,11 +5,12 @@ namespace classes;
 use http\Exception\RuntimeException;
 use enums\ExpenseType;
 use enums\TransactionType;
+use classes\UserMeta;
 
 class Transaction extends Database
 {
     protected static string $table_name = "transactions";
-    protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category', 'budget_id'];
+    protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category', 'budget_id', 'monthly_budget_id'];
     public int $uid;
     public int|null $bid;
     public string $name;
@@ -18,12 +19,17 @@ class Transaction extends Database
     public TransactionType $type;
     public ExpenseType|null $category;
     public int|null $budget_id;
+    public int|null $monthly_budget_id;
 
     public function __construct(array $args = []) {
       parent::__construct($args);
 
       if (isset($args['uid'])) {
-          $this->uid = $args['uid'];
+        $this->uid = $args['uid'];
+
+        $res = UserMeta::find_by_user_id($this->uid);
+        $user_meta = array_shift($res);
+        $this->monthly_budget_id = $user_meta->monthly_budget_id;
       }
       if (isset($args['bid']) && !empty($args['bid'])) {
         $this->set_bank_id((int)$args['bid']);
@@ -76,6 +82,8 @@ class Transaction extends Database
 
     public function save(array $requires=["uid", "name", "amount", "type"]) : bool {
       if ($this->type == TransactionType::EXPENSE) $requires[] = 'category';
+      # Only add `monthly_budget_id` if it's to create
+      if (is_null($this->id)) $requires[] = 'monthly_budget_id';
       return parent::save($requires);
     }
 

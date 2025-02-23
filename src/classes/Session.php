@@ -22,7 +22,7 @@ class Session
         }
     }
 
-    public function login($user): bool
+    public function login($user, bool $verify=true): bool
     {
         if ($user) {
             session_regenerate_id();
@@ -32,6 +32,15 @@ class Session
             $_SESSION['user_email'] = html($user->email);
             $_SESSION['last_login'] = time();
             $this->user_id = $user->id;
+
+            $metas = UserMeta::find_by_user_id($user->id);
+            $user_meta = array_shift($metas);
+            if (!$user_meta->verify_monthly_budget()) {
+              self::add_message('New budget was created!');
+            }
+            $user_meta->last_login = time();
+
+            $user_meta->save();
         }
 
         return true;
