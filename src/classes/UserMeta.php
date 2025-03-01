@@ -39,11 +39,12 @@ class UserMeta extends Database {
     if ($budget_month != date('m')) {
       $new_budget = new Budget([
         "name" => date("F Y"),
-        "uid" => $this->id,
+        "uid" => $this->uid,
         "max_amount" => 300,
-        "from_date" => date('Y-m-01 H:i:s'),
-        "to_date" => date('Y-m-t H:i:s')
+        "from_date" => date('m/01/Y'),
+        "to_date" => date('m/t/Y')
       ]);
+
 
       if (!$new_budget->save()) {
         self::add_errors(['Could not create Budget for UserMeta. Please contact support.']);

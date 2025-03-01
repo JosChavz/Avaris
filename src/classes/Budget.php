@@ -35,7 +35,7 @@ class Budget extends Database {
     }
   }
 
-  public function save(array $requires=[]): bool {
+  public function save(array $requires=['uid', 'name', 'max_amount', 'from_date', 'to_date']): bool {
       return parent::save($this->columns);
   }
 
