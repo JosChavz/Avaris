@@ -103,6 +103,7 @@ import ApexCharts from 'apexcharts';
       const j = await res.json();
 
       if (Object.keys(j['transactions']).length > 0) {
+        delete j['transactions']['total'];
         // Update with new data
         chart.updateOptions(getChartOptions(j['transactions']));
       }
