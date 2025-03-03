@@ -68,7 +68,7 @@ ob_start();
 
 <!-- Table -->
 <div class="flex flex-col mt-6">
-  <div class="overflow-x-auto rounded-lg">
+  <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
     <div class="inline-block min-w-full align-middle">
       <div class="overflow-hidden shadow sm:rounded-lg">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
