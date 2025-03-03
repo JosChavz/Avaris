@@ -98,11 +98,9 @@ import ApexCharts from 'apexcharts';
       // Gets the split prices from an API
       const id = new URL(document.URL).pathname.split('/').slice(-1)[0];
       // Make the fetch
-      console.log(queryString);
       const link = `/api/transactions/sum/${id}?${queryString}`;
       const res = await fetch(link);
       const j = await res.json();
-      console.log(j);
 
       if (Object.keys(j['transactions']).length > 0) {
         // Update with new data

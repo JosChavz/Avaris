@@ -17,7 +17,6 @@ if (is_post_request()) {
 
         if ($existing_user != NULL && $existing_user->verify_password($user->password)) {
             $session->login($existing_user);
-            var_dump($session);
             h('/dashboard/index.php');
             die();
         } else {

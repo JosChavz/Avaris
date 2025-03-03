@@ -103,7 +103,7 @@ const options = {
         console.error("Something went wrong. Defaulting to empty.", e); 
       }
     }
-    for (int i = 0; i < date.getMonth(); i += 1) {
+    for (let i = 0; i < date.getMonth(); i += 1) {
       const currDate = new Date(year, i, 1);
       months.push(date.toLocaleString('default', { month: 'long' }));
     }

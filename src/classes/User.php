@@ -213,6 +213,24 @@ class User extends Database
       return parent::update($requires);
     }
 
+    public function reset_password(string $old_password, string $new_password, string $confirm_new_password) {
+      $curr_user = User::find_by_username($this->email);
+      if (!$this->verify_password($old_password)) {
+        $this->errors[] = "Old password does not match our records.";
+        return false; 
+      }
+      else if (!$this->set_password($new_password)){
+        return false;
+      } else if (!$this->set_confirm_password($confirm_new_password)) {
+        return false; 
+      } 
+
+      $this->set_hashed_password();
+      $this->save();
+
+      return true;
+    }
+
     static public function find_by_username($username): Database | null
     {
         $sql = "SELECT * FROM " . static::$table_name . " ";
