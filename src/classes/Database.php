@@ -43,7 +43,7 @@ use enums\UserRoles;
         // results into objects
         $object_array = [];
         while($record = $result->fetch_assoc()) {
-            $object_array[] = static::instantiate($record);
+          $object_array[] = static::instantiate($record);
         }
 
         $result->free();
