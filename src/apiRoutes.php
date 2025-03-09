@@ -27,11 +27,6 @@ Router::apiGet('/transactions/sum', function($params) {
   global $session;
   header('Content-Type: application/json');
 
-  if (!is_numeric($params['bid'])) {
-    http_response_code(400);
-    return ['error' => 'bid must be an integer type'];
-  }
-
   $month = $params['query']['month'] ?? null;
   $year = $params['query']['year'] ?? null;
 

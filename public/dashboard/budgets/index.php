@@ -27,11 +27,11 @@ ob_start();
 <!-- This Month Budget -->
 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
   <h2 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">This Month&apos;s Progress</h2>
-  <span class="text-sm font-normal text-gray-500 dark:text-gray-400">Want to change your monthly budget?</span>
+  <p class="text-sm text-gray-500 dark:text-gray-400">Want to change your monthly budget?</p>
 
   
   <a href="/dashboard/settings#monthly-budget" 
-    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+    class="my-6 inline-block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
   Change Monthly Budget
   </a>
 

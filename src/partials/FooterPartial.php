@@ -21,7 +21,7 @@ class FooterPartial {
         <ul class="space-y-4 mt-6">
 
         <?php foreach ($submenu['links'] as $link): ?>
-          <li>
+          <li class="!m-0">
           <a href='<?php echo $link['url'] ?>' class='hover:text-gray-800 text-gray-600 dark:text-gray-300 dark:hover:text-white text-sm'><?php echo $link['text'] ?></a>
           </li>
         <?php endforeach; ?>

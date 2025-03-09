@@ -25,7 +25,7 @@ ob_start();
   'name' => 'View',
 ])); ?>
 <div class="mb-14">
-  <h1 class="mb-2 text-4xl font-bold text-gray-900 dark:text-white">Transactions</h1>
+  <h1 class="mb-2 text-4xl font-bold text-gray-900 dark:text-white"><?php echo $budget->name ?></h1>
   <p class="text-base font-normal text-gray-500 dark:text-gray-400">
     <?php echo DateTime::createFromFormat('Y-m-d', $budget->from_date)->format('m/d/Y'); ?> through <?php echo DateTime::createFromFormat('Y-m-d', $budget->to_date)->format('m/d/Y'); ?>
   </p>
@@ -40,10 +40,15 @@ ob_start();
   <div class="w-full h-6 bg-gray-200 rounded-full mb-8 dark:bg-gray-700">
     <div class="h-6 bg-green-600 rounded-full dark:bg-green-500" style="width: <?php echo $progress ?>%"></div>
   </div>
+  
+  <a href="/dashboard/transactions/create?budget_id=<?php echo urlencode($budget->id) ?>" 
+    class="mb-8 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+    Add Transaction
+  </a>
 </div>
 
 <!-- Transaction Table  -->
-<div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+<div class="mt-8 p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
   <div class="flex flex-col mt-6">
     <div class="overflow-x-auto rounded-lg">
       <div class="inline-block min-w-full align-middle">

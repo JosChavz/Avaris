@@ -110,6 +110,6 @@ use partials\FooterPartial;
           array( "text" => "Security", "url" => "#" ),
         ));
         ?>        
-        <p class='text-gray-600 dark:text-gray-300 text-sm md:ml-auto'>Created by <a href="https://hozay.io/" class="underline underline-offset-8">Jose Manuel Chavez</a></p>
+        <p class='text-gray-600 dark:text-gray-300 text-sm md:ml-auto'>Created by <a href="https://hozay.tech/" class="underline underline-offset-8">Jose Manuel Chavez</a></p>
       </div>
     </footer>

@@ -2,11 +2,13 @@
   global $session;
 
   use classes\User;
+  use classes\Budget;
   use classes\UserMeta;
 
   $user_id = $session->get_user_id();
   $user_meta = UserMeta::find_by_user_id($user_id)[0];
   $user = User::find_by_username($session->get_user_email());
+  $current_monthly_budget = Budget::find_by_id_auth($session->get_monthly_budget_id(), $user_id);
 
   $title = "Settings";
 
@@ -32,11 +34,18 @@
       $user_meta->set_monthly_budget($budget_args['amount']); 
       $user_meta->save();
 
+
       if (!empty($user_meta->errors)) {
         $session->add_errors($user_meta->errors); 
       } else {
-        # NOTE: Or should it update it immediately???
-        $session->add_message('Updated monthly budget! Starts next month!');
+        $current_monthly_budget->set_max_amount($budget_args['amount']);
+        $current_monthly_budget->save();
+
+        if (!empty($current_monthly_budget->errors)) {
+          $session->add_errors($current_monthly_budget->errors);
+        } else {
+          $session->add_message('Updated monthly budget!');
+        }
       }
     }
   }

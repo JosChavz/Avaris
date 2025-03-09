@@ -62,6 +62,11 @@ ob_start();
   </div>
 </div>
 
+  <a href="/dashboard/transactions/create?bank_id=<?php echo urlencode($bank->id) ?>" 
+    class="inline-block my-8 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+    Add Transaction
+  </a>
+
   <!-- Table -->
   <div class="flex flex-col mt-6 col-span-2">
     <div class="overflow-x-auto rounded-lg">
