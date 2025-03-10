@@ -15,7 +15,7 @@ use partials\FooterPartial;
 
        <?php 
           # Services Submenu
-          echo FooterPartial::render_submenus(
+          /*echo FooterPartial::render_submenus(
             array(
               "header" => "Services",
               "links" => array(
@@ -96,7 +96,7 @@ use partials\FooterPartial;
                   "url"   => "#"
                 )
               )
-            ));
+            ));*/
        ?>
       </div>
 
