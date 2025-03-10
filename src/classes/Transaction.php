@@ -237,6 +237,10 @@ class Transaction extends Database
      *                        month   : int
      *                        year    : int
      *                       ]
+     * @return array  Summation of all or chosen ExpenseType broken into an array
+     *                  e.g. ['TRANSPORTATION' => 20.22, 'FOOD' => 233.24 ]
+     *                Also a total summation of the chosen ExpenseType
+     *                  e.g[ ... 'total' => 333.33 ]
      ***/
     public static function select_all_type_summation(int $user_id, array $cats=[], array $args=[]) : array {
         $type_summations = array();
@@ -244,6 +248,8 @@ class Transaction extends Database
         if (empty($cats)) {
           $cats = ExpenseType::cases();
         }
+
+        $total_sum = 0;
 
         foreach ($cats as $cat) {
             $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id . " AND category='" . self::$database->escape_string(strtoupper($cat->value)) . "'";
@@ -266,8 +272,11 @@ class Transaction extends Database
             // Only add it if exists
             if (isset($curr_sum)) {
                 $type_summations[$cat->value] = number_format($curr_sum, 2, ".", "");
+                $total_sum += $curr_sum;
             }
         }
+
+        $type_summations['total'] = number_format($total_sum, 2, '.', "");
 
         return $type_summations;
     }

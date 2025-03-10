@@ -43,7 +43,7 @@ use enums\UserRoles;
         // results into objects
         $object_array = [];
         while($record = $result->fetch_assoc()) {
-            $object_array[] = static::instantiate($record);
+          $object_array[] = static::instantiate($record);
         }
 
         $result->free();
@@ -81,6 +81,7 @@ use enums\UserRoles;
      * @param int   $user_id  The User ID
      * @param array $args     Any extra arguments with schema:
      *                        {
+     *                          limit : int
      *                          asc   : boolean;
      *                          month : int;
      *                          year  : int;
@@ -96,7 +97,11 @@ use enums\UserRoles;
       if (isset($args['month']) && is_int($args['month'])) $sql .= " AND month(created_at)=" . $args['month'];
       if (isset($args['year']) && is_int($args['year'])) $sql .= " AND year(created_at)=" . $args['year'];
 
-      $sql .= " ORDER BY created_at " . $order . ";";
+      $sql .= " ORDER BY created_at " . $order;
+
+      if (isset($args['limit']) && is_int($args['limit'])) $sql .= " LIMIT " . $args['limit'];
+      $sql .= ';';
+
       return self::find_by_sql($sql);
     }
 
@@ -140,10 +145,10 @@ use enums\UserRoles;
         } catch(mysqli_sql_exception $e) {
             $err = "";
             // Detailed error
-            // $err = "Error " . $e->getCode() . ":\n ";
+            # $err .= "Error " . $e->getCode() . ":\n ";
             $err .= match ($e->getCode()) {
                 1062 => "Duplicate entry",
-                1452 => "No matching bank ID. Please contact support.",
+                1452 => "No matching database ID. Please contact support.",
                 default => $e->getMessage(),
             };
 

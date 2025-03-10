@@ -19,12 +19,20 @@ class TransactionFormPartial {
    * @param Budget[]        $budgets  Array of user budgets that are still open
    * @param boolean         $create   Will point to the `./create.php` page if it's meant to create;
    *                                  Otherwise, send to the `./edit.php` page
+   * @param array           $args     Extra arguments mainly due to _GET requests : {
+   *                                    budget_id: string
+   *                                    bank_id: string
+   *                                  }
+   *                                  Note: A _POST data will take priority than a _GET query
    * @return string Template that was requested to render for CREATE/UPDATE actions with
    *                any prefilled data if `$args` is present
    ***/
-  public static function render_create_form(Transaction $transaction, TransactionType $type, array $banks, array $budgets, bool $create=true) : string {
-    ob_start();
+  public static function render_create_form(Transaction $transaction, TransactionType $type, array $banks, array $budgets, bool $create=true, array $args=[]) : string {
+    $selected_bank_id = $transaction->bid ?? $args['bank_id'] ?? null;
+    $selected_budget_id = $transaction->budget_id ?? $args['budget_id'] ?? null;
+
     $action_url = '/dashboard/transactions/' . (($create) ? 'create' : 'edit/' . $transaction->id);
+    ob_start();
   ?>
     <!-- Process the document in the same page -->
     <form action="<?php echo $action_url ?>" method="POST">
@@ -80,7 +88,7 @@ class TransactionFormPartial {
             <option value="">Cash</option>
           <?php foreach($banks as $bank) : ?>
             <option 
-              <?php echo ((isset($transaction->bid) && ($transaction->bid == $bank->id)) ? "selected" : "")  ?>
+              <?php echo ((isset($selected_bank_id) && ($selected_bank_id== $bank->id)) ? "selected" : "")  ?>
               value="<?php echo $bank->id ?>"><?php echo $bank->name ?></option>
           <?php endforeach; ?>
           </select>
@@ -95,7 +103,7 @@ class TransactionFormPartial {
             <option value="">---None---</option>
           <?php foreach($budgets as $budget) : ?>
             <option 
-              <?php echo ((isset($transaction->budget_id) && ($transaction->budget_id == $budget->id)) ? "selected" : "")  ?>
+              <?php echo ((isset($selected_budget_id) && ($selected_budget_id == $budget->id)) ? "selected" : "")  ?>
               value="<?php echo $budget->id ?>"><?php echo $budget->name ?></option>
           <?php endforeach; ?>
           </select>

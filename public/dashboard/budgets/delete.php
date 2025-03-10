@@ -6,7 +6,6 @@ use partials\BreadcrumbPartial;
 use partials\Budget;
 
 $title = "Budget | Delete";
-ob_start();
 
 if(is_post_request()) {
   if ($budget->remove()) {
@@ -16,7 +15,11 @@ if(is_post_request()) {
   } else {
     $session->add_error("Unable to remove budget.");
   }
+} else {
+
 }
+
+ob_start();
 
 ?>
 
@@ -51,14 +54,11 @@ if(is_post_request()) {
       <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
         To Date
       </th>
-      <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-        Status
-      </th>
       </tr>
     </thead>
     <tbody class="bg-white dark:bg-gray-800">
     <?php 
-      echo BudgetRowPartial::render_row($budget, 0); 
+      echo BudgetRowPartial::render_row($budget, 0, false); 
     ?>
     </tbody>
   </table>
@@ -66,7 +66,7 @@ if(is_post_request()) {
   <form method="POST" action="/dashboard/budgets/delete/<?php echo $budget->id; ?>" >
     <input 
       class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" 
-      type="submit" aria-label="delete this transaction" value="Delete Bank">
+      type="submit" aria-label="delete this transaction" value="Delete Budget">
   </form>
 </article>
 

@@ -10,7 +10,8 @@ export default defineConfig({
         flowbite: resolve(__dirname, 'src/js/flowbite.js'),
         sidebar: resolve(__dirname, 'src/js/sidebar.js'),
         darkmode: resolve(__dirname, 'src/js/darkmode.js'),
-        bankgraph: resolve(__dirname, 'src/js/bankgraph.js')
+        bankgraph: resolve(__dirname, 'src/js/bankgraph.js'),
+        yearlychart: resolve(__dirname, 'src/js/yearlychart.js')
       },
       output: {
         entryFileNames: 'js/[name].min.js',

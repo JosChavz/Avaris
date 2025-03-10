@@ -20,7 +20,7 @@
               <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Logout
               </h1>
-              <form class="space-y-4 md:space-y-6" action="./logout.php" method="POST">
+              <form class="space-y-4 text-gray-800 md:space-y-6 dark:text-white" action="./logout.php" method="POST">
                 <p>Are you sure you want to logout?</p>
                 <div class="flex justify-center">
                   <a href="/dashboard/"
@@ -44,6 +44,6 @@
 <?php
   $content = ob_get_clean();
   
- require_once(ROOT . "src/templates/template.php"); 
+ require_once(TEMPLATE_DASHBOARD); 
 
 ?>
