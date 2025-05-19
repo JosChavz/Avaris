@@ -26,15 +26,18 @@ class Router {
       ), 
     ];
 
-    public static function get(string $path, callable $callback) {
+    public static function get(string $path, callable $callback): void
+    {
         self::$routes['GET'][$path] = $callback;
     }
 
-    public static function post(string $path, callable $callback) {
+    public static function post(string $path, callable $callback): void
+    {
         self::$routes['POST'][$path] = $callback;
     }
 
-    public static function apiGet($path, $callback) {
+    public static function apiGet($path, $callback): void
+    {
       self::$apiRoutes['GET'][$path] = $callback;
     }
 
@@ -116,7 +119,6 @@ class Router {
         }
 
         // Check for direct file match first
-        $requestedFile = ROOT . "public" . $uri;
         if (file_exists($requestedFile) && is_file($requestedFile)) {
             // For PHP files, include them
             if (pathinfo($requestedFile, PATHINFO_EXTENSION) === 'php') {
@@ -130,7 +132,8 @@ class Router {
         return false;
     }
 
-    public static function dispatchAPI($uri, $method) {
+    public static function dispatchAPI($uri, $method): bool
+    {
       global $session;
 
       // MUST be logged-in for API calls
@@ -189,13 +192,9 @@ class Router {
     }
 
     private static function extractParams(array $matches): array {
-        $params = [];
-        foreach ($matches as $key => $value) {
-            if (is_string($key)) {
-                $params[$key] = $value;
-            }
-        }
-        return $params;
+        return array_filter($matches, function ($key) {
+            return is_string($key);
+        }, ARRAY_FILTER_USE_KEY);
     }
 }
 
@@ -204,7 +203,7 @@ require_once ROOT . '/src/routes.php';
 require_once ROOT . '/src/apiRoutes.php';
 
 // Dispatch the request
-if (strpos($_SERVER['REQUEST_URI'], '/api') === 0) {
+if (str_starts_with($_SERVER['REQUEST_URI'], '/api')) {
   // Handle API routes
   if (!Router::dispatchAPI($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])) {
     // If no API route matched, return 404 JSON response
@@ -223,4 +222,4 @@ if (strpos($_SERVER['REQUEST_URI'], '/api') === 0) {
       }
   }
 }
-?>
+

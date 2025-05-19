@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # PHP with Apache
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-app
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - DB_HOST=${mysql:-mysql}
+      - DB_NAME=${DB_NAME:-phpapp}
+      - DB_USER=${DB_USER:-dbuser}
+      - DB_PASSWORD=${DB_PASSWORD:-dbpassword}
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: php-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-phpapp}
+      MYSQL_USER: ${DB_USER:-dbuser}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-dbpassword}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:

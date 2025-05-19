@@ -7,7 +7,7 @@ define('ROOT', substr(__DIR__, 0, $private_end));
 
 require ROOT . "vendor/autoload.php";
 
-$env = parse_ini_file(ROOT . "/src/.env"); 
+$env = parse_ini_file(ROOT . "/.env");
 
 $site_name = 'https://avaris.hozay.io/';
 
@@ -25,7 +25,7 @@ if ($env['DEBUG']) {
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 global $env;
-$database = new mysqli($env['DB_HOST'], $env['DB_USER'], $env['DB_PASS'], $env['DB_TABLE']);
+$database = new mysqli($env['DB_HOST'], $env['DB_USER'], $env['DB_PASSWORD'], $env['DB_NAME']);
 Database::set_database($database);
 
 require_once 'functions.php';
@@ -35,5 +35,3 @@ $session = new Session();
 // TEMPLATES
 define("TEMPLATE_OUTER", ROOT . '/src/templates/template.php');
 define("TEMPLATE_DASHBOARD", ROOT . '/src/templates/dashboard-template.php');
-
-?>

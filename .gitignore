@@ -1,6 +1,9 @@
 .htaccess
+!public/.htaccess
 .htpasswd
 node_modules/
 
+.idea/
+
 /vendor/
-src/.env
+.env

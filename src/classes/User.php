@@ -169,30 +169,13 @@ class User extends Database
         return false;
       }
 
-      # Create a budget for the `monthly_budget_id`
-      $budget = new Budget([
-        "name" => date("F Y"),
-        "uid" => $this->id,
-        "max_amount" => 300,
-        "from_date" => date('m/01/Y'),
-        "to_date" => date('m/t/Y')
-      ]);
-
-      if (!$budget->save()) {
-        $this->add_errors(['Could not create Budget. Please contact support.']);
-        self::remove();
-        return false;
-      }
-
       # After creating a user, create its user_meta
       $user_meta = new UserMeta([
         'uid' => $this->id,
-        'monthly_budget_id' => $budget->id,
       ]);
 
       if (!$user_meta->save()) {
         $this->add_errors(['Could not create UserMeta. Please contact support.']);
-        $budget->remove();
         self::remove();
         return false;
       }
