@@ -10,6 +10,7 @@
     },
     "require": {
         "yassinedoghri/php-icons": "^1.2",
-      "ext-mysqli": "*"
+      "ext-mysqli": "*",
+      "ext-xdebug": "*"
     }
 }

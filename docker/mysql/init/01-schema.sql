@@ -127,7 +127,6 @@ CREATE TABLE IF NOT EXISTS `user_meta` (
     `last_login` date DEFAULT current_timestamp(),
     `created_at` datetime NOT NULL DEFAULT current_timestamp(),
     `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
-    `monthly_budget_amount` int(11) DEFAULT 300,
     PRIMARY KEY (`id`),
     KEY `FK_UserMeta` (`uid`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

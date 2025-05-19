@@ -12,10 +12,6 @@ RUN apt-get update && apt-get install -y \
     nodejs \
     npm
 
-# INSTALL COMPOSER
-RUN curl -s https://getcomposer.org/installer | php
-RUN alias composer='php composer.phar'
-
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -23,8 +19,16 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-install mysqli mbstring exif pcntl bcmath gd
 RUN docker-php-ext-enable mysqli
 
+# Install XDebug (explicitly specifying version 3)
+RUN pecl install xdebug-3.2.2 \
+    && docker-php-ext-enable xdebug \
+    && echo "zend_extension=xdebug.so" > /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
 # Enable Apache modules
 RUN a2enmod rewrite
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Setup Apache document root
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public

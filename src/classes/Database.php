@@ -140,6 +140,8 @@ use enums\UserRoles;
         $sql .= join("', '", array_values($attributes));
         $sql .= "')";
 
+        var_dump($sql);
+
         try {
             $result = self::$database->query($sql);
         } catch(mysqli_sql_exception $e) {
@@ -203,7 +205,7 @@ use enums\UserRoles;
      * @return bool
      */
     public function save(array $requires=[]) : bool {
-      if (isset($this->id) && !empty($this->id)) {
+      if (!empty($this->id)) {
         return $this->update($requires);
       } else {
         return $this->create($requires);

@@ -28,6 +28,12 @@ global $env;
 $database = new mysqli($env['DB_HOST'], $env['DB_USER'], $env['DB_PASSWORD'], $env['DB_NAME']);
 Database::set_database($database);
 
+/* check connection */
+if ($database->connect_errno) {
+    printf("Connect failed: %s\n", $database->connect_error);
+    exit();
+}
+
 require_once 'functions.php';
 
 $session = new Session();

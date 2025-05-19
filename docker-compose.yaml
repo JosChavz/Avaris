@@ -11,6 +11,7 @@ services:
     volumes:
       - .:/var/www/html
       - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     ports:
       - "80:80"
     networks:
@@ -23,6 +24,10 @@ services:
       - DB_NAME=${DB_NAME:-phpapp}
       - DB_USER=${DB_USER:-dbuser}
       - DB_PASSWORD=${DB_PASSWORD:-dbpassword}
+      - PHP_IDE_CONFIG=serverName=php-docker
+      - XDEBUG_CONFIG="client_host=host.docker.internal"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   # MySQL Database
   mysql:
@@ -46,6 +51,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: php-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+    depends_on:
+      mysql:
+        condition: service_healthy
 
 networks:
   app-network:
