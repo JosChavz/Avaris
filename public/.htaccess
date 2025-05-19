@@ -1,0 +1,14 @@
+RewriteEngine On
+
+# Common Redirects
+RewriteRule ^login$ /auth/login [R=301,L]
+RewriteRule ^register$ /auth/register [R=301,L]
+RewriteRule ^forgot-password$ /auth/forgot-password [R=301,L]
+
+# Serve existing static files directly (css, js, images)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteCond %{REQUEST_URI} \.(css|js|jpg|jpeg|png|gif|ico|svg)$ [NC]
+RewriteRule ^ - [L]
+
+# Route everything else through router.php
+RewriteRule ^ router.php [L]
