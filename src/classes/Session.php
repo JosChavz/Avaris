@@ -34,16 +34,10 @@ class Session
             $_SESSION['last_login'] = time();
             $this->user_id = $user->id;
 
-            var_dump($user->id);
             $metas = UserMeta::find_by_user_id($user->id);
-            var_dump($metas);
             $user_meta = array_shift($metas);
-            if (!$user_meta->verify_monthly_budget()) {
-              self::add_message('New monthly budget was created!');
-            }
             $user_meta->last_login = date('Y-m-d');
             $user_meta->save();
-            $_SESSION['monthly_budget_id'] = $user_meta->monthly_budget_id;
         }
 
         return true;
