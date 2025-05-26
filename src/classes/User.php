@@ -176,7 +176,7 @@ class User extends Database
 
       if (!$user_meta->save()) {
         $this->add_errors(['Could not create UserMeta. Please contact support.']);
-        self::remove();
+        $t = self::remove();
         return false;
       }
 

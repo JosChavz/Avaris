@@ -13,7 +13,6 @@ $user_id = $session->get_user_id();
 $month = (int)date('m');
 $year = (int)date('Y');
 
-$monthly_budget = Budget::find_by_id_auth($session->get_monthly_budget_id(), $user_id);
 $budgets = Budget::find_budgets($user_id);
 $transactions = Transaction::find_by_user_id(
   $user_id,
@@ -50,10 +49,7 @@ ob_start();
   </div>
   <!--Tabs widget -->
   <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-    <h3 class="flex items-center mb-4 text-lg font-semibold text-gray-900 dark:text-white">Mothly Budget</h3>
-    <?php echo BudgetTrakPartial::render_progress($monthly_budget, $monthly_sum); ?>
-    
-    <?php 
+    <?php
       foreach ($budgets ?? [] as $budget) :
     ?>  
       <h3 class="flex items-center text-lg font-semibold text-gray-900 dark:text-white"><?php echo $budget->name?></h3>
@@ -105,7 +101,6 @@ ob_start();
   </div>
 </div>
 
-</div>
 <?php
   $content = ob_get_clean();
   require_once(ROOT . "/src/templates/dashboard-template.php");

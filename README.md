@@ -72,6 +72,21 @@ There are so many budget tracking apps out there, but as someone who had horribl
 
 ## Debugging
 
+For this project, I use PHPStorm given that the docker container uses xdebug. In order to debug,
+please do the following:
+
+1. Run the `docker-compose.yaml` containers
+2. Go to Settings > Servers > Create (+)
+3. For the **_name_**, use the server name that was passed in the `docker-compose.yaml` file
+   1. e.g. `PHP_IDE_CONFIG=serverName=php-app` would be `php-app` for the name 
+4. For host and port, default by `localhost` and `80` unless changed. This is what you use to connect to the website
+5. For mapping, unless changed from the `Dockerfile`, map your project to the app in the container
+   1. e.g. `YOUR_REPO` and `/var/www/html`
+
+Click on the phone on the toolbar to listen to any debugging calls... and that should be it!
+
+### Issues
+
 In the case that `npm run build:css` or `npm run watch:css` throws an error like:
 
 ```

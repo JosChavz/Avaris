@@ -140,8 +140,6 @@ use enums\UserRoles;
         $sql .= join("', '", array_values($attributes));
         $sql .= "')";
 
-        var_dump($sql);
-
         try {
             $result = self::$database->query($sql);
         } catch(mysqli_sql_exception $e) {

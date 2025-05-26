@@ -87,7 +87,6 @@ CREATE TABLE IF NOT EXISTS `transactions` (
     `budget_id` int(11) DEFAULT NULL,
     `created_at` datetime NOT NULL DEFAULT current_timestamp(),
     `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
-    `monthly_budget_id` int(11) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `FK_BankTransaction` (`bid`),
     KEY `FK_UserTransaction` (`uid`)
@@ -124,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `user_meta` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `uid` int(11) NOT NULL,
     `timezone` varchar(255) NOT NULL DEFAULT 'America/Los_Angeles',
-    `last_login` date DEFAULT current_timestamp(),
+    `last_login` datetime NOT NULL DEFAULT current_timestamp(),
     `created_at` datetime NOT NULL DEFAULT current_timestamp(),
     `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
     PRIMARY KEY (`id`),

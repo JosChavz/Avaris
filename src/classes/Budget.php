@@ -106,19 +106,12 @@ class Budget extends Database {
    *                      [
    *                        limit   : int
    *                        offset  : int
-   *                        exclude_monthly_budget : bool
    *                      ]
    ***/
-  public static function find_budgets(int $user_id, bool $archived=false, array $args=["limit" => 5, "exclude_monthly_budget" => true]) : array {
+  public static function find_budgets(int $user_id, bool $archived=false, array $args=["limit" => 5]) : array {
     $op = ($archived) ? '<' : '>=';
     $sql = "SELECT * FROM budgets WHERE `to_date` " . $op . " CURRENT_DATE AND uid="
       . $user_id;
-
-    if ($archived || isset($args['exclude_monthly_budget']) && $args['exclude_monthly_budget']) {
-      $res = UserMeta::find_by_user_id($user_id);
-      $user_meta = array_shift($res);
-      $sql .= " AND id !=" . $user_meta->monthly_budget_id;
-    }
 
     $sql .= " ORDER BY `from_date` DESC";
 
@@ -133,5 +126,3 @@ class Budget extends Database {
   }
 
 }
-
-?>

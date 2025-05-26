@@ -21,7 +21,6 @@ $query_bank_id = $_GET['bank_id'] ?? null;
 if (is_post_request()) {
   $args = $_POST['transaction'];
   $args['uid'] = $session->get_user_id();
-  $args['monthly_budget_id'] = $session->get_monthly_budget_id();
   $transaction = new Transaction($args);
 
   if (empty($transaction->errors)) {

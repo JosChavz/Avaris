@@ -81,7 +81,7 @@ import ApexCharts from 'apexcharts';
 
   if (document.getElementById("yearly-chart") && typeof ApexCharts !== 'undefined') {
     const chart = new ApexCharts(document.getElementById("yearly-chart"), getChartOptions());
-    chart.render();
+    await chart.render();
 
     const getMonthlyExpenseSummations = async () => {
         const date = new Date();

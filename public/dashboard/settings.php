@@ -8,7 +8,6 @@
   $user_id = $session->get_user_id();
   $user_meta = UserMeta::find_by_user_id($user_id)[0];
   $user = User::find_by_username($session->get_user_email());
-  $current_monthly_budget = Budget::find_by_id_auth($session->get_monthly_budget_id(), $user_id);
 
   $title = "Settings";
 
@@ -29,23 +28,6 @@
         $session->add_errors($user->errors);
       } else {
         $session->add_message('Updated password!');
-      }
-    } else if (isset($budget_args)) {
-      $user_meta->set_monthly_budget($budget_args['amount']); 
-      $user_meta->save();
-
-
-      if (!empty($user_meta->errors)) {
-        $session->add_errors($user_meta->errors); 
-      } else {
-        $current_monthly_budget->set_max_amount($budget_args['amount']);
-        $current_monthly_budget->save();
-
-        if (!empty($current_monthly_budget->errors)) {
-          $session->add_errors($current_monthly_budget->errors);
-        } else {
-          $session->add_message('Updated monthly budget!');
-        }
       }
     }
   }
@@ -195,35 +177,6 @@
             </form>
         </div>
 -->
-
-        <!-- Budget Settings  -->
-        <div 
-          id="monthly-budget"
-          class="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm col-span-full dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-            <h3 class="mb-4 text-xl text-gray-800 font-semibold dark:text-white">Password information</h3>
-            <form action="./settings.php" method="POST">
-                <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-6 sm:col-span-3">
-                        <label 
-                          for="budget-amount" 
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Budget Amount</label>
-                        <input 
-                          type="number" 
-                          value="<?php echo $user_meta->monthly_budget_amount; ?>"
-                          step="1"
-                          name="budget[amount]" 
-                          id="budget-amount" 
-                          class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="••••••••" required>
-                    </div>
-                    <div class="col-span-6 sm:col-full">
-                        <button 
-                          class="text-white !bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" 
-                          type="submit">Save all</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
 
         <!-- Reset Password -->
         <div 
