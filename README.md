@@ -1,6 +1,8 @@
 # Avaris
 Avaris is an expiremental side project to better understand PHP, but overall, it is a budget tracking application. The whole idea is to make budgets for yourself throughout the month and organize it accordingly.
 
+![1741645064029](https://github.com/user-attachments/assets/a18404ff-08fe-4e4a-b220-26156dafd9fc)
+
 ## Development
 
 Please ensure to run the following commands:
