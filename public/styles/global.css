@@ -1,8 +1,244 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 @import "tailwindcss";
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
+
+@tailwind utilities;
 
 body {
   @apply dark:bg-gray-900;
+}
+
+/* Changelog Markdown Styles */
+section#changelog {
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.25;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #111827;
+  }
+
+  h1 { font-size: 1.875rem; } /* 30px */
+  h2 { font-size: 1.5rem; }   /* 24px */
+  h3 { font-size: 1.25rem; }  /* 20px */
+  h4 { font-size: 1.125rem; } /* 18px */
+  h5 { font-size: 1rem; }     /* 16px */
+  h6 { font-size: 0.875rem; } /* 14px */
+
+  /* Remove top margin from first heading */
+  h1:first-child,
+  h2:first-child,
+  h3:first-child,
+  h4:first-child,
+  h5:first-child,
+  h6:first-child {
+    margin-top: 0;
+  }
+
+  /* Paragraphs */
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.625;
+  }
+
+  /* Links */
+  a {
+    color: #3b82f6;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  a:hover {
+    color: #1d4ed8;
+    text-decoration: none;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  li {
+    margin-bottom: 0.25rem;
+    line-height: 1.625;
+  }
+
+  /* Nested lists */
+  ul ul, ol ol, ul ol, ol ul {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  ul ul {
+    list-style-type: circle;
+  }
+
+  ul ul ul {
+    list-style-type: square;
+  }
+
+  /* Blockquotes */
+  blockquote {
+    border-left: 4px solid #e5e7eb;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #6b7280;
+  }
+
+  /* Code */
+  code {
+    background-color: #f3f4f6;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.875rem;
+    color: #dc2626;
+  }
+
+  /* Code blocks */
+  pre {
+    background-color: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+    border-radius: 0;
+  }
+
+  /* Horizontal rules */
+  hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 2rem 0;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+  }
+
+  th, td {
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f9fafb;
+    font-weight: 600;
+  }
+
+  /* Images */
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  /* Strong and emphasis */
+  strong {
+    font-weight: 700;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  /* Dark mode styles */
+  @media (prefers-color-scheme: dark) {
+    h1, h2, h3, h4, h5, h6 {
+      color: #f9fafb;
+    }
+
+    a {
+      color: #60a5fa;
+    }
+
+    a:hover {
+      color: #93c5fd;
+    }
+
+    blockquote {
+      border-left-color: #374151;
+      color: #9ca3af;
+    }
+
+    code {
+      background-color: #374151;
+      color: #fbbf24;
+    }
+
+    hr {
+      border-top-color: #374151;
+    }
+
+    th, td {
+      border-color: #374151;
+    }
+
+    th {
+      background-color: #1f2937;
+    }
+  }
+}
+
+/* Alternative: If you're using Tailwind's dark mode classes */
+.dark section#changelog {
+  h1, h2, h3, h4, h5, h6 {
+    color: #f9fafb;
+  }
+
+  a {
+    color: #60a5fa;
+  }
+
+  a:hover {
+    color: #93c5fd;
+  }
+
+  blockquote {
+    border-left-color: #374151;
+    color: #9ca3af;
+  }
+
+  code {
+    background-color: #374151;
+    color: #fbbf24;
+  }
+
+  hr {
+    border-top-color: #374151;
+  }
+
+  th, td {
+    border-color: #374151;
+  }
+
+  th {
+    background-color: #1f2937;
+  }
 }

@@ -26,7 +26,7 @@
     "postcss-import": "^16.1.0",
     "prettier": "^3.4.2",
     "tailwindcss": "^4.0.8",
-    "vite": "^6.0.6",
+    "vite": "6.3.4",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {

@@ -12,8 +12,6 @@ class Changelog extends Database {
 
   function __construct(array $args=[]) {
     parent::__construct($args);
-
-    self::$columns = array_merge(parent::$columns, $self::$columns);
   }
 
 }
