@@ -44,9 +44,9 @@ CREATE TABLE IF NOT EXISTS `budgets` (
 
 DROP TABLE IF EXISTS `changelog`;
 CREATE TABLE IF NOT EXISTS `changelog` (
-    `id` int(11) NOT NULL,
+    `id` int(11) AUTO_INCREMENT NOT NULL,
     `title` varchar(255) NOT NULL,
-    `description` longblob NOT NULL,
+    `description` longtext NOT NULL,
     `created_at` datetime NOT NULL DEFAULT current_timestamp(),
     `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
     PRIMARY KEY (`id`)

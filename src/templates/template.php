@@ -18,7 +18,6 @@ $message = $session->get_message();
   <title><?php echo $title ?? "Avaris" ?></title>
   <link rel="stylesheet" href="/styles/global.min.css">
   <link rel="stylesheet" href="/styles/dashboard.min.css">
-  <link rel="stylesheet" href="/styles/flowbite.min.css">
   <script src='/js/darkmode.min.js' defer></script>
   <script src='/js/flowbite.min.js' defer></script>
 </head>

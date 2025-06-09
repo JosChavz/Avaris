@@ -1,14 +1,20 @@
 import ApexCharts from 'apexcharts';
 
 (async function() {
-  const getChartOptions = (monthlySummations=[] ) => {
+  const getChartOptions = (monthlySummations= {expense: [], income: []} ) => {
+    console.log('monthly summation', monthlySummations);
     return {
       series: [
         {
           name: "Expense",  
-          data: monthlySummations,
+          data: monthlySummations['expense'],
           color: "#1A56DB",
         },
+        {
+          name: "Income",
+          data: monthlySummations['income'],
+          color: "#54db1a",
+        }
       ],
       chart: {
         height: "100%",
@@ -83,23 +89,33 @@ import ApexCharts from 'apexcharts';
     const chart = new ApexCharts(document.getElementById("yearly-chart"), getChartOptions());
     await chart.render();
 
-    const getMonthlyExpenseSummations = async () => {
+    const getMonthlySummations = async () => {
         const date = new Date();
         const year = date.getFullYear();
         const months = [];
         const monthSumPromises = [];
         const getMonthSum = async (month) => {
           try {
+            // expense = number ; income = number ;
+            const summations = {};
+
             const today = new Date();
             const queryParams = new URLSearchParams({
               month: month,
               year: today.getFullYear(),
             });
             const queryString = queryParams.toString();
-            // Make the fetch
-            const link = `/api/transactions/sum?${queryString}`;
-            const res = await fetch(link);
-            return await res.json();
+
+            const expenseLink = `/api/transactions/sum?${queryString}`;
+            const expenseRes = await fetch(expenseLink);
+
+            const incomeLink = `/api/transactions/income?${queryString}`;
+            const incomeRes = await fetch(incomeLink);
+
+            summations['expense'] = await expenseRes.json();
+            summations['income'] = await incomeRes.json();
+
+            return summations;
           } catch(e) {
             console.error("Something went wrong. Defaulting to empty.", e); 
           }
@@ -116,8 +132,11 @@ import ApexCharts from 'apexcharts';
         return await Promise.all(monthSumPromises);
       }
 
-      getMonthlyExpenseSummations().then((d) => {
-        const monthlySums = d.map(n => n['transactions']['total']);
+      getMonthlySummations().then((d) => {
+        const monthlySums = {
+          expense: d.map((d) => d.expense['transactions']['total']),
+          income: d.map((d) => d.income['sum']),
+        };
         chart.updateOptions(getChartOptions(monthlySums));
       }).catch((e) => console.error(e));
   }

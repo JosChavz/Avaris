@@ -36,7 +36,8 @@ ob_start();
         <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">$<?php echo number_format($monthly_sum, 2); ?></span>
         <h3 class="text-base font-light text-gray-500 dark:text-gray-400">Transactions this month</h3>
       </div>
-      <!--<div class="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">
+      <!-- Compare to last month
+      <div class="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">
         12.5%
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd"

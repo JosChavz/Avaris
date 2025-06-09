@@ -69,7 +69,8 @@ class Budget extends Database {
     return count($temp_errors) == 0;
   }
 
-  public function set_from_date(string $from_date) {
+  public function set_from_date(string $from_date): bool
+  {
     $temp_errors = array();
 
     if (empty($from_date)) {
@@ -83,12 +84,13 @@ class Budget extends Database {
     return count($temp_errors) == 0;
   }
 
-  public function set_to_date(string $to_date) {
+  public function set_to_date(string $to_date): bool
+  {
       $temp_errors = array();
 
       if (empty($to_date)) {
         $temp_errors[] = "To date cannot be empty.";
-      } else if (is_null($this->from_date) || empty($this->from_date)) {
+      } else if (empty($this->from_date)) {
         $temp_errors[] = "Please include a from date."; 
       } else {
         $temp_date = DateTime::createFromFormat('m/d/Y', $to_date);
@@ -118,7 +120,6 @@ class Budget extends Database {
     if (isset($args['offset'])) {
       $sql .= " OFFSET " . $args['offset'];
     }
-
 
     $sql .= " LIMIT " . self::$database->escape_string($args['limit']) . ";";
     

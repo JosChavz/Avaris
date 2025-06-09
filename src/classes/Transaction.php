@@ -127,6 +127,33 @@ class Transaction extends Database
         return array_shift($row);
     }
 
+    /**
+     * Selects the income of the user
+     * @param int   $user_id User ID
+     * @param array $args    Extra arguments with the schema:
+     *                       [
+     *                          month : int
+     *                          year : int
+     *                       ]
+     * @return float
+     */
+    public static function select_income_summation(int $user_id, array $args) : float {
+        $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . self::$database->escape_string($user_id);
+        $sql .= " AND type='INCOME'";
+
+        if (isset($args['month'])) $sql .= " AND MONTH(created_at) = " . self::$database->escape_string($args['month']);
+        if (isset($args['year'])) $sql .= " AND YEAR(created_at) = " . self::$database->escape_string($args['year']);
+
+        $sql .= ';';
+        $result = self::$database->query($sql);
+        $row = $result->fetch_assoc();
+        $result->free();
+
+        $total_sum = array_shift($row) ?? 0;
+
+        return number_format($total_sum, 2, '.', "");
+    }
+
     /***
      * User summation of expenses of type EXPENSE
      * If no $cats is present, will return all categories
@@ -143,8 +170,6 @@ class Transaction extends Database
      ***/
     public static function select_summation(int $user_id, array $cats=[], array $args=[]) : float {
       if (empty($cats)) return self::select_all_summation($user_id, $args);
-
-      $sum = 0;
 
       $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id;
 
@@ -280,7 +305,8 @@ class Transaction extends Database
      *                          offset : int
      *                       ]
      ***/
-    public static function select_from_bank(int $user_id, int $bank_id, array $args=[]) {
+    public static function select_from_bank(int $user_id, int $bank_id, array $args=[]): array
+    {
        $sql = "SELECT * FROM transactions WHERE bid = " . self::$database->escape_string($bank_id) .
             " AND uid=" . $user_id;
 

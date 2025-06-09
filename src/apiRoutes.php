@@ -64,4 +64,17 @@ Router::apiGet('/transactions/sum/:bid', function($params) {
   return json_encode(['transactions' => $transactions]);
 });
 
-?>
+Router::apiGet('/transactions/income', function($params) {
+  global $session;
+  $args = [];
+  header('Content-Type: application/json');
+
+  $month = $params['query']['month'] ?? null;
+  $year = $params['query']['year'] ?? null;
+
+  if (!is_null($month) && is_numeric($month)) $args['month'] = (int)$month;
+  if (!is_null($year) && is_numeric($year)) $args['year'] = (int)$year;
+
+  $transactions = Transaction::select_income_summation($session->get_user_id(), $args);
+  return json_encode(['sum' => $transactions]);
+});
