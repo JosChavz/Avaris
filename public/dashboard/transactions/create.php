@@ -3,6 +3,7 @@
 global $session;
 
 $title = "Transaction | Create";
+$extra_deps = ["<script type='module' src='/js/transactions.min.js' defer></script>"];
 ob_start();
 
 use classes\Transaction;
@@ -22,6 +23,8 @@ if (is_post_request()) {
   $args = $_POST['transaction'];
   $args['uid'] = $session->get_user_id();
   $transaction = new Transaction($args);
+  
+  var_dump($transaction);
 
   if (empty($transaction->errors)) {
     if ($transaction->save()) {

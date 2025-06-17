@@ -2,15 +2,13 @@
 
 namespace classes;
 
-use http\Exception\RuntimeException;
 use enums\ExpenseType;
 use enums\TransactionType;
-use classes\UserMeta;
 
 class Transaction extends Database
 {
     protected static string $table_name = "transactions";
-    protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category', 'budget_id'];
+    protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category', 'budget_id', 'logged_date'];
     public int $uid;
     public int|null $bid;
     public string $name;
@@ -18,6 +16,7 @@ class Transaction extends Database
     public string $description;
     public TransactionType $type;
     public ExpenseType|null $category;
+    public $logged_date;
     public int|null $budget_id;
     public function __construct(array $args = []) {
       parent::__construct($args);
@@ -50,6 +49,9 @@ class Transaction extends Database
         } catch(\Error $e) {
           $this->errors[] = "Invalid category";
         }
+      }
+      if (isset($args['logged_date'])) {
+        $this->logged_date = $args['logged_date'];
       }
     }
 

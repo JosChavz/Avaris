@@ -17,7 +17,6 @@ $message = $session->get_message();
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title><?php echo $title ?? "Avaris" ?></title>
   <link rel="stylesheet" href="/styles/global.min.css">
-  <link rel="stylesheet" href="/styles/dashboard.min.css">
   <script src='/js/darkmode.min.js' defer></script>
   <script src='/js/flowbite.min.js' defer></script>
   <script src='/js/sidebar.min.js' defer></script>

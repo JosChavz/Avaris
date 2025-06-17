@@ -11,7 +11,8 @@ export default defineConfig({
         sidebar: resolve(__dirname, 'src/js/sidebar.js'),
         darkmode: resolve(__dirname, 'src/js/darkmode.js'),
         bankgraph: resolve(__dirname, 'src/js/bankgraph.js'),
-        yearlychart: resolve(__dirname, 'src/js/yearlychart.js')
+        yearlychart: resolve(__dirname, 'src/js/yearlychart.js'),
+        transactions: resolve(__dirname, 'src/js/transactions.js'),
       },
       output: {
         entryFileNames: 'js/[name].min.js',

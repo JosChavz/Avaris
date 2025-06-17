@@ -10,10 +10,9 @@
   "scripts": {
     "composer": "composer dump-autoload",
     "build:css": "npx tailwindcss -i public/styles/global.css -o public/styles/global.min.css --minify",
-    "watch:css": "npx tailwindcss -i public/styles/global.css -i public/styles/dashboard.css -i public/styles/font.css -o public/styles/global.min.css -o public/styles/dashboard.min.css -o public/styles/font.min.css --minify --watch",
+    "watch:css": "npx tailwindcss -i public/styles/global.css -o public/styles/global.min.css --minify --watch",
     "build:js": "vite build",
-    "watch:js": "vite build --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch:js": "vite build --watch"
   },
   "author": "",
   "license": "ISC",
@@ -32,6 +31,7 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.0.8",
     "autoprefixer": "^10.4.20",
-    "flowbite-datepicker": "^1.3.2"
+    "flowbite-datepicker": "^1.3.2",
+    "jquery": "^3.7.1"
   }
 }
