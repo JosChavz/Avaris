@@ -18,7 +18,7 @@ class TransactionRowPartial {
         <?php echo $transaction->name; ?>
       </td>
       <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-        <?php echo (new \DateTimeImmutable($transaction->created_at))->format('M d Y H:s'); ?>
+        <?php echo (new \DateTimeImmutable($transaction->logged_date))->format('M d Y'); ?>
       </td>
       <td class="p-4 text-sm font-semibold text-gray-900 whitespace-nowrap dark:text-white">
         <?php echo '$' . number_format($transaction->amount, 2); ?>
