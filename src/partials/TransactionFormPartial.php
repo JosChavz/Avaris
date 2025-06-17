@@ -60,15 +60,16 @@ class TransactionFormPartial {
                        name="transaction[logged_date]"
                        datepicker-title="From Date"
                        data-date="<?php
-                         echo date('m/d/Y');
+                         echo date('m-d-Y');
                        ?>"
                        value="<?php
-                        if ($transaction->logged_date) {
-                            echo date('m/d/Y', strtotime($transaction->logged_date));
+                        if (isset($transaction->logged_date)) {
+                            echo date('m-d-Y', strtotime($transaction->logged_date));
                         } else {
-                          echo date('m/d/Y');
+                          echo date('m-d-Y');
                         }
                        ?>"
+                       datepicker-format="mm-dd-yyyy"
                        type="text"
                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                        placeholder="Select date">

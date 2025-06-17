@@ -51,7 +51,7 @@ class Transaction extends Database
         }
       }
       if (isset($args['logged_date'])) {
-        $this->logged_date = $args['logged_date'];
+         $this->set_logged_date($args['logged_date']);
       }
     }
 
@@ -103,6 +103,16 @@ class Transaction extends Database
 
       $this->add_errors($temp_errors);
       return count($temp_errors) == 0;
+    }
+  
+  /**
+   * Sets the logged date of the transaction converting from mm-dd-yyyy to yyyy-mm-dd for SQL
+   * @param string $date
+   * @return void
+   */
+    public function set_logged_date(string $date): void
+    {
+      $this->logged_date = date("Y-m-d", strtotime($date));
     }
 
     public function set_amount(int|float $amount) {
