@@ -10,7 +10,7 @@ class TransactionRowPartial {
   public static function render_row(Transaction $transaction) {
     ob_start();
   ?>
-    <tr>
+    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
       <td class="py-4 px-2 inline-flex items-center space-x-2 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
         <?php echo $transaction->type->icon(); ?>
       </td>
