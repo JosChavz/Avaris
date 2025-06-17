@@ -33,7 +33,7 @@ $message = $session->get_message();
     <?php include_once(ROOT . "/src/templates/dashboard-aside.php"); ?>
   
     <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
-      <main class="px-12 py-14 min-h-svh">
+      <main class="px-4 py-8 md:px-12 md:py-14 min-h-svh">
         <?php if (count($errors)) echo AlertPartial::render_errors("Error", $errors); ?>
         <?php if ($message) echo AlertPartial::render_message("Success", $message); ?>
         <?php echo $content ?? "" ?>

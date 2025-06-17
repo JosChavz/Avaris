@@ -23,7 +23,7 @@ ob_start();
   <span class="text-base font-normal text-gray-500 dark:text-gray-400">This is a list of latest transactions</span>
 </div>
 <!-- Transaction Table  -->
-<div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+<div class="bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 px-6 py-10 dark:bg-gray-800">
   <!-- Card header -->
   <div class="items-center justify-between lg:flex">
     <div class="items-center sm:flex w-full gap-4">
