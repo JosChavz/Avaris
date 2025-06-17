@@ -24,8 +24,6 @@ if (is_post_request()) {
   $args['uid'] = $session->get_user_id();
   $transaction = new Transaction($args);
   
-  var_dump($transaction);
-
   if (empty($transaction->errors)) {
     if ($transaction->save()) {
       $session->add_message("Successfully created transaction");
