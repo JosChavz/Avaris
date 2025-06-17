@@ -16,7 +16,7 @@ class Transaction extends Database
     public string $description;
     public TransactionType $type;
     public ExpenseType|null $category;
-    public $logged_date;
+    public mixed $logged_date;
     public int|null $budget_id;
     public function __construct(array $args = []) {
       parent::__construct($args);
