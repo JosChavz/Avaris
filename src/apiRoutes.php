@@ -64,4 +64,40 @@ Router::apiGet('/transactions/sum/:bid', function($params) {
   return json_encode(['transactions' => $transactions]);
 });
 
-?>
+/**
+ * Gets the summation of all income for the user
+ * Queries: [
+ *  month: int
+ *  year: int
+ * ]
+ */
+Router::apiGet('/transactions/income', function($params) {
+  global $session;
+  $args = [];
+  header('Content-Type: application/json');
+
+  $month = $params['query']['month'] ?? null;
+  $year = $params['query']['year'] ?? null;
+
+  if (!is_null($month) && is_numeric($month)) $args['month'] = (int)$month;
+  if (!is_null($year) && is_numeric($year)) $args['year'] = (int)$year;
+
+  $transactions = Transaction::select_income_summation($session->get_user_id(), $args);
+  return json_encode(['sum' => $transactions]);
+});
+
+/**
+ * Gets the information of a transaction based on the ID
+ */
+Router::apiGet('/transactions/:id', function($params) {
+  global $session;
+  header('Content-Type: application/json');
+  
+  if (!is_numeric($params['id'])) {
+    http_response_code(400);
+    return ['error' => 'id must be an integer type'];
+  }
+  
+  $transaction = Transaction::find_by_id_auth($params['id'], $session->get_user_id());
+  return json_encode(['transaction' => $transaction]);
+});

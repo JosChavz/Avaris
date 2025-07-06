@@ -10,7 +10,7 @@ class TransactionRowPartial {
   public static function render_row(Transaction $transaction) {
     ob_start();
   ?>
-    <tr>
+    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
       <td class="py-4 px-2 inline-flex items-center space-x-2 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
         <?php echo $transaction->type->icon(); ?>
       </td>
@@ -18,13 +18,21 @@ class TransactionRowPartial {
         <?php echo $transaction->name; ?>
       </td>
       <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-        <?php echo (new \DateTimeImmutable($transaction->created_at))->format('M d Y H:s'); ?>
+        <?php echo (new \DateTimeImmutable($transaction->logged_date))->format('M d Y'); ?>
       </td>
       <td class="p-4 text-sm font-semibold text-gray-900 whitespace-nowrap dark:text-white">
         <?php echo '$' . number_format($transaction->amount, 2); ?>
       </td>
-      <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-        <?php if ($transaction->type == TransactionType::EXPENSE) echo $transaction->category->icon(); ?>
+      <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400 relative">
+        <?php if ($transaction->type == TransactionType::EXPENSE) : ?>
+            <span data-popover-target="<?php echo $transaction->id ?>_popover" >
+                <?php echo $transaction->category->icon(); ?>
+            </span>
+            <div data-popover id="<?php echo $transaction->id ?>_popover" role="tooltip" class="absolute z-10 invisible inline-block w-32 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-xs opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                <p class="text-center px-4 py-2"><?php echo $transaction->category->value ?></p>
+                <div data-popper-arrow></div>
+            </div>
+        <?php endif; ?>
       </td>
       <td class="p-4 whitespace-nowrap justify-end">
         <button id="transaction_<?php echo $transaction->id ?>-dropdown-button" data-dropdown-toggle="transaction_<?php echo $transaction->id; ?>-dropdown" class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100" type="button">

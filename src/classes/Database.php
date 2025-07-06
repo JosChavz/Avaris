@@ -7,7 +7,7 @@ use mysqli;
 use mysqli_sql_exception;
 use enums\UserRoles;
 
-#[AllowDynamicProperties] class Database 
+#[AllowDynamicProperties] class Database
 {
     static protected mysqli $database;
     protected static string $table_name;
@@ -85,19 +85,21 @@ use enums\UserRoles;
      *                          asc   : boolean;
      *                          month : int;
      *                          year  : int;
+     *                          date_key : string;
      *                        }
      * @return Database[]
      */
     static function find_by_user_id(int $user_id, array $args=[]) : array {
       $order = ((isset($args['asc']) && $args['asc']) ? 'ASC' : 'DESC');
+      $date_key = $args['date_key'] ?? 'created_at';
 
       $sql = "SELECT * FROM " . static::$table_name . " WHERE uid="
         . self::$database->escape_string($user_id);
 
-      if (isset($args['month']) && is_int($args['month'])) $sql .= " AND month(created_at)=" . $args['month'];
-      if (isset($args['year']) && is_int($args['year'])) $sql .= " AND year(created_at)=" . $args['year'];
+      if (isset($args['month']) && is_int($args['month'])) $sql .= " AND month($date_key)=" . $args['month'];
+      if (isset($args['year']) && is_int($args['year'])) $sql .= " AND year($date_key)=" . $args['year'];
 
-      $sql .= " ORDER BY created_at " . $order;
+      $sql .= " ORDER BY $date_key " . $order;
 
       if (isset($args['limit']) && is_int($args['limit'])) $sql .= " LIMIT " . $args['limit'];
       $sql .= ';';

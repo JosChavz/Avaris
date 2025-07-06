@@ -2,15 +2,13 @@
 
 namespace classes;
 
-use http\Exception\RuntimeException;
 use enums\ExpenseType;
 use enums\TransactionType;
-use classes\UserMeta;
 
 class Transaction extends Database
 {
     protected static string $table_name = "transactions";
-    protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category', 'budget_id'];
+    protected array $columns = ['uid', 'bid', 'name', 'amount', 'description', 'type', 'category', 'budget_id', 'logged_date'];
     public int $uid;
     public int|null $bid;
     public string $name;
@@ -18,6 +16,7 @@ class Transaction extends Database
     public string $description;
     public TransactionType $type;
     public ExpenseType|null $category;
+    public mixed $logged_date;
     public int|null $budget_id;
     public function __construct(array $args = []) {
       parent::__construct($args);
@@ -25,8 +24,11 @@ class Transaction extends Database
       if (isset($args['uid'])) {
         $this->uid = $args['uid'];
       }
-      if (isset($args['bid']) && !empty($args['bid'])) {
+      if (!empty($args['bid'])) {
         $this->set_bank_id((int)$args['bid']);
+      }
+      if (!empty($args['budget_id'])) {
+        $this->budget_id = $args['budget_id'];
       }
       if (isset($args['name'])) {
           $this->set_name($args['name']);
@@ -50,6 +52,9 @@ class Transaction extends Database
         } catch(\Error $e) {
           $this->errors[] = "Invalid category";
         }
+      }
+      if (isset($args['logged_date'])) {
+         $this->set_logged_date($args['logged_date']);
       }
     }
 
@@ -102,6 +107,18 @@ class Transaction extends Database
       $this->add_errors($temp_errors);
       return count($temp_errors) == 0;
     }
+  
+  /**
+   * Sets the logged date of the transaction converting from mm-dd-yyyy to yyyy-mm-dd for SQL
+   * @param string $date
+   * @return void
+   */
+    public function set_logged_date(string $date): void
+    {
+        $format_date = date_create_from_format('m-d-Y', $date);
+        $new_date =  date_format($format_date,"Y/m/d");
+        $this->logged_date = $new_date;
+    }
 
     public function set_amount(int|float $amount) {
         $amount = trim($amount);
@@ -127,6 +144,33 @@ class Transaction extends Database
         return array_shift($row);
     }
 
+    /**
+     * Selects the income of the user
+     * @param int   $user_id User ID
+     * @param array $args    Extra arguments with the schema:
+     *                       [
+     *                          month : int
+     *                          year : int
+     *                       ]
+     * @return float
+     */
+    public static function select_income_summation(int $user_id, array $args) : float {
+        $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . self::$database->escape_string($user_id);
+        $sql .= " AND type='INCOME'";
+
+        if (isset($args['month'])) $sql .= " AND MONTH(created_at) = " . self::$database->escape_string($args['month']);
+        if (isset($args['year'])) $sql .= " AND YEAR(created_at) = " . self::$database->escape_string($args['year']);
+
+        $sql .= ';';
+        $result = self::$database->query($sql);
+        $row = $result->fetch_assoc();
+        $result->free();
+
+        $total_sum = array_shift($row) ?? 0;
+
+        return number_format($total_sum, 2, '.', "");
+    }
+
     /***
      * User summation of expenses of type EXPENSE
      * If no $cats is present, will return all categories
@@ -143,8 +187,6 @@ class Transaction extends Database
      ***/
     public static function select_summation(int $user_id, array $cats=[], array $args=[]) : float {
       if (empty($cats)) return self::select_all_summation($user_id, $args);
-
-      $sum = 0;
 
       $sql = "SELECT SUM(amount) FROM transactions WHERE uid=" . $user_id;
 
@@ -280,15 +322,16 @@ class Transaction extends Database
      *                          offset : int
      *                       ]
      ***/
-    public static function select_from_bank(int $user_id, int $bank_id, array $args=[]) {
+    public static function select_from_bank(int $user_id, int $bank_id, array $args=[]): array
+    {
        $sql = "SELECT * FROM transactions WHERE bid = " . self::$database->escape_string($bank_id) .
             " AND uid=" . $user_id;
 
         if (isset($args['month'])) {
-            $sql .= " AND MONTH(created_at)=" . self::$database->escape_string($args['month']);
+            $sql .= " AND MONTH(logged_date)=" . self::$database->escape_string($args['month']);
         }
         if (isset($args['year'])) {
-            $sql .= " AND YEAR(created_at)=" . self::$database->escape_string($args['year']);
+            $sql .= " AND YEAR(logged_date)=" . self::$database->escape_string($args['year']);
         }
         if (isset($args['limit'])) {
             $sql .= " LIMIT " . self::$database->escape_string($args['limit']);
@@ -297,7 +340,7 @@ class Transaction extends Database
             $sql .= " OFFSET " . self::$database->escape_string($args['offset']);
         }
 
-        $sql .= " ORDER BY created_at DESC";
+        $sql .= " ORDER BY logged_date DESC";
         return self::find_by_sql($sql);
     }
 

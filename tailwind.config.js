@@ -1,4 +1,3 @@
-import type { Config } from "tailwindcss";
 import colors from 'tailwindcss/colors';
 import flowbitePlugin from 'flowbite/plugin';
 
@@ -66,8 +65,5 @@ export default {
         'kanban': '28rem'
       },
     },
-  },
-  plugins: [
-    flowbitePlugin(),
-  ],
-} satisfies Config;
+  }
+};

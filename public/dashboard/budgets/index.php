@@ -21,12 +21,6 @@ ob_start();
   <span class="text-base font-normal text-gray-500 dark:text-gray-400">Budgets on the go!</span>
 </div>
 
-<!-- This Month Budget -->
-<div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-  <h2 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">This Month&apos;s Progress</h2>
-  <p class="text-sm text-gray-500 dark:text-gray-400">Want to change your monthly budget?</p>
-</div>
-
 <div class="mt-8 p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
   <h2 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">Current Budgets</h2>
   <span class="text-base font-normal text-gray-500 dark:text-gray-400">Try not to exceed your budgets!!!</span>
