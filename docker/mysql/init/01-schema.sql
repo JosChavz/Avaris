@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
     `type` enum('INCOME','EXPENSE') DEFAULT NULL,
     `category` enum('DINING','ENTERTAINMENT','GROCERIES','BILLS','SHOPPING','TRANSPORTATION','WORK','TRAVEL') DEFAULT NULL,
     `budget_id` int DEFAULT NULL,
-    `logged_date` date NOT NULL DEFAULT (curdate()),
+    `logged_date` datetime NOT NULL DEFAULT (curdate()),
     `created_at` datetime NOT NULL DEFAULT current_timestamp(),
     `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
     PRIMARY KEY (`id`),
