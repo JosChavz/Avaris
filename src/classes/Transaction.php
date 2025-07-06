@@ -24,8 +24,11 @@ class Transaction extends Database
       if (isset($args['uid'])) {
         $this->uid = $args['uid'];
       }
-      if (isset($args['bid']) && !empty($args['bid'])) {
+      if (!empty($args['bid'])) {
         $this->set_bank_id((int)$args['bid']);
+      }
+      if (!empty($args['budget_id'])) {
+        $this->budget_id = $args['budget_id'];
       }
       if (isset($args['name'])) {
           $this->set_name($args['name']);
@@ -325,10 +328,10 @@ class Transaction extends Database
             " AND uid=" . $user_id;
 
         if (isset($args['month'])) {
-            $sql .= " AND MONTH(created_at)=" . self::$database->escape_string($args['month']);
+            $sql .= " AND MONTH(logged_date)=" . self::$database->escape_string($args['month']);
         }
         if (isset($args['year'])) {
-            $sql .= " AND YEAR(created_at)=" . self::$database->escape_string($args['year']);
+            $sql .= " AND YEAR(logged_date)=" . self::$database->escape_string($args['year']);
         }
         if (isset($args['limit'])) {
             $sql .= " LIMIT " . self::$database->escape_string($args['limit']);
@@ -337,7 +340,7 @@ class Transaction extends Database
             $sql .= " OFFSET " . self::$database->escape_string($args['offset']);
         }
 
-        $sql .= " ORDER BY created_at DESC";
+        $sql .= " ORDER BY logged_date DESC";
         return self::find_by_sql($sql);
     }
 

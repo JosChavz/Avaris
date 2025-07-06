@@ -3,7 +3,12 @@ global $session;
 
 use partials\BudgetRowPartial;
 use partials\BreadcrumbPartial;
-use partials\Budget;
+
+if (empty($budget)) {
+    $session->add_error("That budget does not exist.");
+    h('/dashboard/budgets/');
+    die();
+}
 
 $title = "Budget | Delete";
 
@@ -16,7 +21,7 @@ if(is_post_request()) {
     $session->add_error("Unable to remove budget.");
   }
 } else {
-
+	$session->add_error("Unable to remove budget.");
 }
 
 ob_start();

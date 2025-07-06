@@ -4,6 +4,12 @@ global $session;
 use partials\BreadcrumbPartial;
 use partials\BankRowPartial;
 
+if (empty($bank)) {
+    $session->add_error('That bank does not exist.');
+    h('/dashboard/banks');
+    die();
+}
+
 $title = "Banks | Delete";
 ob_start();
 
@@ -27,34 +33,12 @@ if(is_post_request()) {
 ])); ?>
 
 <div class="mb-8">
-  <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Delete Transaction</h1>
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Delete Bank</h1>
 </div>
 
 <article class="p-4 max-w-screen-sm m-auto bg-white rounded-lg !rounded-b-none shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
   <p class="mb-4">Are you sure you want to delete the following?</p>
-  <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
-    <thead class="bg-gray-50 dark:bg-gray-700">
-      <tr>
-        <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-          Name
-        </th>
-        <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-          Type
-        </th>
-        <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-          Amount
-        </th>
-        <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-          Category 
-        </th>
-      </tr>
-    </thead>
-    <tbody class="bg-white dark:bg-gray-800">
-    <?php 
-      echo BankRowPartial::render_row($bank); 
-    ?>
-    </tbody>
-  </table>
+  <h2 class="mb-4 text-xl font-bold"><?php echo $bank->name ?></h2>
 
   <form method="POST" action="/dashboard/banks/delete/<?php echo $bank->id; ?>" >
     <input 
