@@ -112,7 +112,9 @@ class Transaction extends Database
    */
     public function set_logged_date(string $date): void
     {
-      $this->logged_date = date("Y-m-d", strtotime($date));
+        $format_date = date_create_from_format('m-d-Y', $date);
+        $new_date =  date_format($format_date,"Y/m/d");
+        $this->logged_date = $new_date;
     }
 
     public function set_amount(int|float $amount) {
