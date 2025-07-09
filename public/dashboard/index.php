@@ -28,6 +28,18 @@ $extra_deps = array('<script type="module" src="/js/yearlychart.min.js"></script
 
 ob_start();
 ?>
+<div class="grid gap-4 grid-cols-2 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12 mb-6">
+    <a href="/dashboard/transactions/create" class="text-xs text-center cursor-pointer p-4 bg-white border border-gray-200 rounded-lg shadow-sm md:col-span-2 dark:border-gray-700 sm:p-4 dark:bg-gray-800">
+        <p>New Transaction</p>
+    </a>
+    <a href="/dashboard/banks/create" class="text-xs text-center cursor-pointer p-4 bg-white border border-gray-200 rounded-lg shadow-sm md:col-span-2 dark:border-gray-700 sm:p-4 dark:bg-gray-800">
+        <p>New Bank</p>
+    </a>
+    <a href="/dashboard/budgets/create" class="text-xs text-center cursor-pointer p-4 bg-white border border-gray-200 rounded-lg shadow-sm md:col-span-2 dark:border-gray-700 sm:p-4 dark:bg-gray-800">
+        <p>New Budget</p>
+    </a>
+</div>
+
 <div class="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
   <!-- Main widget -->
   <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">

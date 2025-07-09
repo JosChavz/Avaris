@@ -107,7 +107,7 @@ import ApexCharts from 'apexcharts';
         delete j['transactions']['total'];
 
         // Update with new data
-        chart.updateOptions(getChartOptions(j['transactions']));
+        await chart.updateOptions(getChartOptions(j['transactions']));
       }
     } catch(e) {
       console.error("Something went wrong. Defaulting to empty.", e); 

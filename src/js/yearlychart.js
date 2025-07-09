@@ -2,7 +2,6 @@ import ApexCharts from 'apexcharts';
 
 (async function() {
   const getChartOptions = (monthlySummations= {expense: [], income: []} ) => {
-    console.log('monthly summation', monthlySummations);
     return {
       series: [
         {
