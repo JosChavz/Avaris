@@ -7,7 +7,17 @@ define('ROOT', substr(__DIR__, 0, $private_end));
 
 require ROOT . "vendor/autoload.php";
 
-$env = parse_ini_file(ROOT . "/.env");
+if (file_exists(ROOT . "/.env")) {
+    $env = parse_ini_file(ROOT . "/.env");
+} else {
+    $env = [
+        'DB_HOST'     => getenv('DB_HOST'),
+        'DB_USER'     => getenv('DB_USER'),
+        'DB_PASSWORD' => getenv('DB_PASSWORD'),
+        'DB_NAME'     => getenv('DB_NAME'),
+        'DEBUG'       => getenv('DEBUG') ?: false,
+    ];
+}
 
 $site_name = 'https://avaris.hozay.io/';
 
