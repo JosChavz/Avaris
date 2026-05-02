@@ -10,8 +10,6 @@
     },
     "require": {
         "yassinedoghri/php-icons": "^1.2",
-      "ext-mysqli": "*",
-      "ext-xdebug": "*",
         "league/commonmark": "^2.7"
     }
 }
